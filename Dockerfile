@@ -14,8 +14,11 @@ WORKDIR /var/www/html
 # Copy all Laravel files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install PHP dependencies (skip scripts to avoid env issues at build time)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Run package discovery manually after
+RUN php artisan package:discover --ansi || true
 
 # Install JS dependencies and build assets
 RUN npm install && npm run build
