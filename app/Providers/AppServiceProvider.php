@@ -17,10 +17,17 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-        if (config('app.env') === 'production') {
-            URL::forceScheme('https');
-        }
+public function boot(): void
+{
+    if (config('app.env') === 'production') {
+        URL::forceScheme('https');
+        \Illuminate\Http\Request::setTrustedProxies(
+            ['*'],
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
+            \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO
+        );
     }
+}
 }
