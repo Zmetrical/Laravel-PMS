@@ -1,59 +1,134 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 💼 CLDG Office Payroll System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A role-based **Payroll and HR Management System** built with **Laravel** and **Bootstrap 5**, designed to manage employee records, timekeeping, payroll processing, and HR operations across multiple branches.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📋 Table of Contents
 
-## Learning Laravel
+- [About the Project](#about-the-project)
+- [Screenshots](#screenshots)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Folder Structure](#folder-structure)
+- [User Roles](#user-roles)
+- [License](#license)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📌 About the Project
 
-## Laravel Sponsors
+**CLDG Office Payroll System** is a comprehensive web-based payroll and workforce management platform. It supports multiple user roles — Employee, HR, Accounting, and Admin — each with dedicated portals and access controls. The system handles everything from employee timekeeping and leave requests to payroll period processing and salary computation.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 📸 Screenshots
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+> 📁 Place all your screenshots inside a `/screenshots` folder in the root of your repository.
 
-## Contributing
+| Page | Screenshot |
+|------|------------|
+| Login Page | ![Login](screenshots/login.png) |
+| Admin Dashboard | ![Dashboard](screenshots/dashboard.png) |
+| Employee Portal | ![Employee](screenshots/employee-portal.png) |
+| Timekeeping | ![Timekeeping](screenshots/timekeeping.png) |
+| Payroll Period | ![Payroll](screenshots/payroll-period.png) |
+| HR – Team Attendance | ![Attendance](screenshots/team-attendance.png) |
+| HR – Requests | ![Requests](screenshots/requests.png) |
+| Admin – Departments | ![Departments](screenshots/departments.png) |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> 💡 **Tip:** Use browser screenshots (Full Page) via DevTools or extensions like `GoFullPage` for Chrome.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## ✨ Features
 
-## Security Vulnerabilities
+### 👤 Employee Portal
+- View and update personal **Profile**
+- View assigned **Schedule**
+- Track personal **Timekeeping** records
+- File and monitor **Overtime** requests
+- Submit and track **Leave** applications
+- View **Payslip / Payroll** records
+- Monitor **Loan** balances and history
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 🧑‍💼 Human Resources
+- Manage **Employee** records
+- Monitor **Team Attendance**
+- Manage **Team Schedules**
+- Process **Requests** (leave, overtime approvals)
+- Manage employee **Loans**
+- Generate HR **Reports**
 
-## License
+### 🧾 Accounting
+- Manage **Payroll Periods**
+- Process and view **Salary** computations
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 🛡️ Admin
+- Overview **Dashboard**
+- Manage **Departments**
+- Manage **Positions**
+- Manage **Branches**
+- Configure **System Settings**
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend | Laravel (PHP) |
+| Frontend | Bootstrap 5, Bootstrap Icons |
+| Templating | Blade (Laravel) |
+| Database | MySQL |
+| Authentication | Laravel Auth with Role-Based Access |
+| Server | Apache / Nginx |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- PHP >= 8.1
+- Composer
+- Node.js & NPM
+- MySQL
+- Laravel CLI
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/cldg-payroll-system.git
+cd cldg-payroll-system
+
+# 2. Install PHP dependencies
+composer install
+
+# 3. Install Node dependencies
+npm install && npm run dev
+
+# 4. Copy environment file
+cp .env.example .env
+
+# 5. Generate application key
+php artisan key:generate
+
+# 6. Configure your .env database credentials
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
+# 7. Run migrations and seeders
+php artisan migrate --seed
+
+# 8. Link storage
+php artisan storage:link
+
+# 9. Serve the application
+php artisan serve
