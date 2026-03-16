@@ -4,9 +4,6 @@ A role-based **Payroll and HR Management System** built with **Laravel** and **B
 
 ---
 
-<!-- PROJECT SCREENSHOT -->
-> 📸 **[REPLACE THIS]** — Add a banner/hero screenshot of your dashboard here
-> Suggested: `![Dashboard Preview](screenshots/dashboard.png)`
 
 ---
 
