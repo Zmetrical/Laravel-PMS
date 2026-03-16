@@ -1,134 +1,101 @@
-# 💼 CLDG Office Payroll System
+# CLDG Office Payroll System
 
-A role-based **Payroll and HR Management System** built with **Laravel** and **Bootstrap 5**, designed to manage employee records, timekeeping, payroll processing, and HR operations across multiple branches.
+A web-based payroll and HR management system built with Laravel and Bootstrap 5.
+Supports multiple roles — Employee, HR, Accounting, and Admin — each with their own set of modules and access.
+
+![Dashboard Preview](screenshots/dashboard.png)
 
 ---
 
+## Table of Contents
 
----
-
-## 📋 Table of Contents
-
-- [About the Project](#about-the-project)
+- [About](#about)
 - [Screenshots](#screenshots)
-- [Features](#features)
+- [Modules](#modules)
 - [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Folder Structure](#folder-structure)
-- [User Roles](#user-roles)
-- [License](#license)
+- [Setup](#setup)
+- [Roles](#roles)
 
 ---
 
-## 📌 About the Project
+## About
 
-**CLDG Office Payroll System** is a comprehensive web-based payroll and workforce management platform. It supports multiple user roles — Employee, HR, Accounting, and Admin — each with dedicated portals and access controls. The system handles everything from employee timekeeping and leave requests to payroll period processing and salary computation.
+This system was built to handle the day-to-day payroll and HR operations of a multi-branch office. It covers everything from clocking in and filing leaves to processing payroll periods and generating reports — all in one place with role-based access.
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
-> 📁 Place all your screenshots inside a `/screenshots` folder in the root of your repository.
-
-| Page | Screenshot |
-|------|------------|
-| Login Page | ![Login](screenshots/login.png) |
-| Admin Dashboard | ![Dashboard](screenshots/dashboard.png) |
+| Page | Preview |
+|------|---------|
+| Login | ![Login](screenshots/login.png) |
+| Dashboard | ![Dashboard](screenshots/dashboard.png) |
 | Employee Portal | ![Employee](screenshots/employee-portal.png) |
 | Timekeeping | ![Timekeeping](screenshots/timekeeping.png) |
 | Payroll Period | ![Payroll](screenshots/payroll-period.png) |
-| HR – Team Attendance | ![Attendance](screenshots/team-attendance.png) |
-| HR – Requests | ![Requests](screenshots/requests.png) |
-| Admin – Departments | ![Departments](screenshots/departments.png) |
-
-> 💡 **Tip:** Use browser screenshots (Full Page) via DevTools or extensions like `GoFullPage` for Chrome.
+| Team Attendance | ![Attendance](screenshots/team-attendance.png) |
+| Requests | ![Requests](screenshots/requests.png) |
+| Departments | ![Departments](screenshots/departments.png) |
 
 ---
 
-## ✨ Features
+## Modules
 
-### 👤 Employee Portal
-- View and update personal **Profile**
-- View assigned **Schedule**
-- Track personal **Timekeeping** records
-- File and monitor **Overtime** requests
-- Submit and track **Leave** applications
-- View **Payslip / Payroll** records
-- Monitor **Loan** balances and history
+**Employee**
+- Profile, Schedule, Timekeeping, Overtime, Leave, Payroll, Loans
 
-### 🧑‍💼 Human Resources
-- Manage **Employee** records
-- Monitor **Team Attendance**
-- Manage **Team Schedules**
-- Process **Requests** (leave, overtime approvals)
-- Manage employee **Loans**
-- Generate HR **Reports**
+**Human Resources**
+- Employee Management, Team Attendance, Team Schedule, Request Approvals, Loans, Reports
 
-### 🧾 Accounting
-- Manage **Payroll Periods**
-- Process and view **Salary** computations
+**Accounting**
+- Payroll Periods, Salary Processing
 
-### 🛡️ Admin
-- Overview **Dashboard**
-- Manage **Departments**
-- Manage **Positions**
-- Manage **Branches**
-- Configure **System Settings**
+**Admin**
+- Dashboard, Departments, Positions, Branches, Settings
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Backend | Laravel (PHP) |
-| Frontend | Bootstrap 5, Bootstrap Icons |
-| Templating | Blade (Laravel) |
-| Database | MySQL |
-| Authentication | Laravel Auth with Role-Based Access |
-| Server | Apache / Nginx |
+- **Backend** — Laravel (PHP)
+- **Frontend** — Bootstrap 5, Bootstrap Icons
+- **Database** — MySQL
+- **Auth** — Laravel Auth with role-based access control
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- PHP >= 8.1
-- Composer
-- Node.js & NPM
-- MySQL
-- Laravel CLI
-
-### Installation
+## Setup
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/your-username/cldg-payroll-system.git
 cd cldg-payroll-system
 
-# 2. Install PHP dependencies
 composer install
-
-# 3. Install Node dependencies
 npm install && npm run dev
 
-# 4. Copy environment file
 cp .env.example .env
-
-# 5. Generate application key
 php artisan key:generate
+```
 
-# 6. Configure your .env database credentials
-DB_DATABASE=your_database
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+Update your `.env` with your database credentials, then:
 
-# 7. Run migrations and seeders
+```bash
 php artisan migrate --seed
-
-# 8. Link storage
 php artisan storage:link
-
-# 9. Serve the application
 php artisan serve
+```
+
+---
+
+## Roles
+
+| Role | What they can access |
+|------|----------------------|
+| `employee` | Their own profile, schedule, timekeeping, leaves, overtime, payroll, loans |
+| `hr` | All employee records, attendance, schedules, request approvals, loans, reports |
+| `accounting` | Payroll periods and salary processing |
+| `admin` | Everything above + departments, positions, branches, and system settings |
+
+---
+
+> Built with Laravel & Bootstrap 5
