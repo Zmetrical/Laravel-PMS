@@ -3,7 +3,7 @@
 A web-based payroll and HR management system built with Laravel and Bootstrap 5.
 Supports multiple roles — Employee, HR, Accounting, and Admin — each with their own set of modules and access.
 
-![Dashboard Preview](screenshots/dashboard.png)
+![Login](screenshots/login.png)
 
 ---
 
@@ -26,32 +26,69 @@ This system was built to handle the day-to-day payroll and HR operations of a mu
 
 ## Screenshots
 
+> Screenshots are stored in the `/screenshots` folder.
+
+### General
+
 | Page | Preview |
 |------|---------|
 | Login | ![Login](screenshots/login.png) |
-| Dashboard | ![Dashboard](screenshots/dashboard.png) |
-| Employee Portal | ![Employee](screenshots/employee-portal.png) |
+
+---
+
+### Employee
+
+| Page | Preview |
+|------|---------|
+| Schedule | ![Schedule](screenshots/schedule.png) |
 | Timekeeping | ![Timekeeping](screenshots/timekeeping.png) |
-| Payroll Period | ![Payroll](screenshots/payroll-period.png) |
-| Team Attendance | ![Attendance](screenshots/team-attendance.png) |
-| Requests | ![Requests](screenshots/requests.png) |
+| Leave Request | ![Leave Request](screenshots/reuquest-leave.png) |
+| Payslip | ![Payslip](screenshots/payslip.png) |
+
+---
+
+### Human Resources
+
+| Page | Preview |
+|------|---------|
+| HR Schedule | ![HR Schedule](screenshots/hr-schedule.png) |
+| HR Reports | ![HR Reports](screenshots/hr-reports.png) |
+
+---
+
+### Accounting
+
+| Page | Preview |
+|------|---------|
+| Payroll Process | ![Payroll Process](screenshots/payroll-process.png) |
+| Payroll Summary | ![Payroll Summary](screenshots/payroll-summary.png) |
+| Payroll Report | ![Payroll Report](screenshots/payroll-report.png) |
+| Salary | ![Salary](screenshots/salary.png) |
+
+---
+
+### Admin
+
+| Page | Preview |
+|------|---------|
 | Departments | ![Departments](screenshots/departments.png) |
+| Branches | ![Branches](screenshots/branches.png) |
 
 ---
 
 ## Modules
 
 **Employee**
-- Profile, Schedule, Timekeeping, Overtime, Leave, Payroll, Loans
+- Schedule, Timekeeping, Leave Request, Payslip
 
 **Human Resources**
-- Employee Management, Team Attendance, Team Schedule, Request Approvals, Loans, Reports
+- HR Schedule, HR Reports
 
 **Accounting**
-- Payroll Periods, Salary Processing
+- Payroll Process, Payroll Summary, Payroll Report, Salary
 
 **Admin**
-- Dashboard, Departments, Positions, Branches, Settings
+- Departments, Branches
 
 ---
 
