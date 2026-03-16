@@ -1,13 +1,11 @@
-{{-- resources/views/employee/payroll.blade.php --}}
-
 @extends('layouts.main')
 
 @section('title', 'Payroll & Payslips')
 
 @section('breadcrumb')
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-        <li class="breadcrumb-item active">Payroll &amp; Payslips</li>
+        <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-secondary text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item active text-muted">Payroll &amp; Payslips</li>
     </ol>
 @endsection
 
@@ -16,52 +14,48 @@
 @include('components.alerts')
 
 {{-- Page Header --}}
-<div class="mb-3">
-    <h4 class="mb-1">Payroll &amp; Payslips</h4>
-    <p class="text-muted mb-0">View your salary details and government contributions.</p>
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+    <div>
+        <h4 class="mb-0 font-weight-bold text-dark">Payroll &amp; Payslips</h4>
+        <small class="text-muted font-weight-bold text-uppercase">View your salary details and government contributions</small>
+    </div>
 </div>
 
 {{-- Latest Payslip Card --}}
-<div id="latest-card" class="card card-outline card-primary mb-4 d-none">
-    <div class="card-header">
-        <h5 class="card-title mb-0">Latest Payslip</h5>
-        <div class="card-tools">
-            <small id="latest-period-label" class="text-muted me-2"></small>
-            <span class="badge badge-success">Released</span>
+<div id="latest-card" class="card shadow-sm border-0 mb-5 d-none">
+    <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Latest Payslip</h6>
+        <div class="d-flex align-items-center">
+            <span id="latest-period-label" class="text-muted small font-weight-bold text-uppercase me-3"></span>
+            <span class="badge bg-secondary px-3 py-2 text-uppercase" style="letter-spacing: 1px;">Released</span>
         </div>
     </div>
-    <div class="card-body">
-        <div class="row g-3 mb-3">
+    <div class="card-body p-4">
+        <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <div class="info-box mb-0 shadow-none border">
-                    <div class="info-box-content">
-                        <span class="info-box-text">Gross Pay</span>
-                        <span class="info-box-number" id="latest-gross">₱0.00</span>
-                    </div>
+                <div class="border rounded bg-white p-4 shadow-sm text-center h-100 d-flex flex-column justify-content-center">
+                    <span class="text-muted small font-weight-bold text-uppercase mb-2">Gross Pay</span>
+                    <span class="h3 font-weight-bold text-dark mb-0" id="latest-gross">₱0.00</span>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="info-box mb-0 shadow-none border">
-                    <div class="info-box-content">
-                        <span class="info-box-text">Total Deductions</span>
-                        <span class="info-box-number" id="latest-deductions">₱0.00</span>
-                    </div>
+                <div class="border rounded bg-white p-4 shadow-sm text-center h-100 d-flex flex-column justify-content-center">
+                    <span class="text-muted small font-weight-bold text-uppercase mb-2">Total Deductions</span>
+                    <span class="h3 font-weight-bold text-dark mb-0" id="latest-deductions">₱0.00</span>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="info-box mb-0 shadow-none border">
-                    <div class="info-box-content">
-                        <span class="info-box-text">Net Pay</span>
-                        <span class="info-box-number fw-bold" id="latest-net">₱0.00</span>
-                    </div>
+                <div class="border border-secondary rounded bg-light p-4 shadow-sm text-center h-100 d-flex flex-column justify-content-center">
+                    <span class="text-dark small font-weight-bold text-uppercase mb-2">Net Pay</span>
+                    <span class="h2 font-weight-bold text-dark mb-0" id="latest-net">₱0.00</span>
                 </div>
             </div>
         </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-primary btn-sm" id="btn-view-latest">
+        <div class="d-flex gap-3">
+            <button class="btn btn-secondary font-weight-bold px-4 py-2 shadow-sm" id="btn-view-latest">
                 View Breakdown
             </button>
-            <button class="btn btn-outline-secondary btn-sm" id="btn-download-latest">
+            <button class="btn btn-outline-dark font-weight-bold px-4 py-2" id="btn-download-latest">
                 Download PDF
             </button>
         </div>
@@ -69,12 +63,12 @@
 </div>
 
 {{-- Payslip History --}}
-<div class="card card-outline card-secondary">
-    <div class="card-header">
-        <h5 class="card-title mb-0">Payslip History</h5>
-        <div class="card-tools d-flex gap-2">
-            <select id="filter-year" class="form-control form-control-sm" style="width:90px;"></select>
-            <select id="filter-month" class="form-control form-control-sm" style="width:130px;">
+<div class="card shadow-sm border-0 mb-5">
+    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Payslip History</h6>
+        <div class="d-flex gap-2">
+            <select id="filter-year" class="form-select form-select-sm shadow-sm font-weight-bold text-muted w-auto px-3 py-1"></select>
+            <select id="filter-month" class="form-select form-select-sm shadow-sm font-weight-bold text-muted w-auto px-3 py-1">
                 <option value="">All Months</option>
                 @foreach(['January','February','March','April','May','June','July','August','September','October','November','December'] as $m)
                     <option value="{{ $m }}">{{ $m }}</option>
@@ -82,20 +76,20 @@
             </select>
         </div>
     </div>
-    <div class="card-body p-0">
+    <div class="card-body p-4">
 
         {{-- Table --}}
         <div class="table-responsive">
-            <table class="table table-hover table-sm mb-0" id="payslip-table">
-                <thead>
+            <table class="table table-hover align-middle mb-0" id="payslip-table">
+                <thead class="bg-light text-muted small text-uppercase">
                     <tr>
-                        <th>Period</th>
-                        <th>Type</th>
-                        <th class="text-end">Gross Pay</th>
-                        <th class="text-end">Deductions</th>
-                        <th class="text-end">Net Pay</th>
-                        <th>Pay Date</th>
-                        <th class="text-center">Actions</th>
+                        <th class="border-0 font-weight-bold ps-3 py-3">Period</th>
+                        <th class="border-0 font-weight-bold py-3">Type</th>
+                        <th class="border-0 font-weight-bold py-3 text-end">Gross Pay</th>
+                        <th class="border-0 font-weight-bold py-3 text-end">Deductions</th>
+                        <th class="border-0 font-weight-bold py-3 text-end">Net Pay</th>
+                        <th class="border-0 font-weight-bold py-3">Pay Date</th>
+                        <th class="border-0 font-weight-bold py-3 text-center pe-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="payslip-tbody">
@@ -105,111 +99,127 @@
         </div>
 
         {{-- Empty State --}}
-        <div id="empty-state" class="text-center py-5 d-none">
-            <i class="fas fa-file-invoice-dollar fa-2x text-muted mb-2 d-block"></i>
-            <p class="text-muted mb-1">No payslips found.</p>
-            <small class="text-muted">Your payslips will appear here once released by Accounting.</small>
+        <div id="empty-state" class="text-center py-5 bg-light rounded border mt-3 d-none">
+            <span class="font-weight-bold text-dark d-block mb-1">No payslips found.</span>
+            <small class="text-muted font-weight-bold text-uppercase">Your payslips will appear here once released by Accounting.</small>
         </div>
 
     </div>
 </div>
 
 {{-- ── Breakdown Modal ──────────────────────────────────────────────── --}}
-<div class="modal fade" id="breakdownModal" tabindex="-1" aria-labelledby="breakdownModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
+<div class="modal fade" id="breakdownModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded">
 
-            <div class="modal-header">
-                <h5 class="modal-title" id="breakdownModalLabel">Payslip Breakdown</h5>
-                <button type="button" class="close" onclick="closeModal()" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header bg-white border-bottom py-3">
+                <h6 class="modal-title font-weight-bold mb-0 text-dark text-uppercase" id="breakdownModalLabel">Payslip Breakdown</h6>
+                {{-- Bootstrap 5 Native Close --}}
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body p-4 bg-light">
 
-                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <div class="bg-white border rounded p-4 mb-4 shadow-sm d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div>
-                        <strong id="modal-employee-name">{{ auth()->user()->fullName }}</strong>
-                        <div class="text-muted small">
-                            {{ auth()->user()->position }} &mdash; {{ auth()->user()->department }}
+                        <h5 class="font-weight-bold text-dark mb-1" id="modal-employee-name">{{ auth()->user()->fullName }}</h5>
+                        <div class="text-muted small font-weight-bold text-uppercase">
+                            {{ auth()->user()->position }} <span class="mx-1">|</span> {{ auth()->user()->department }}
                         </div>
                     </div>
                     <div class="text-end">
-                        <div class="font-weight-bold" id="modal-period-label"></div>
-                        <div class="text-muted small">Pay Date: <span id="modal-pay-date"></span></div>
+                        <div class="font-weight-bold text-dark mb-1" id="modal-period-label"></div>
+                        <div class="text-muted small font-weight-bold text-uppercase">Pay Date: <span id="modal-pay-date"></span></div>
                     </div>
                 </div>
 
                 {{-- Deferred Balance Notice --}}
-                <div id="modal-deferred-notice" class="alert alert-warning alert-dismissible d-none mb-3">
-                    <h6 class="alert-heading mb-1">Deferred Balance Applied</h6>
-                    <p class="mb-1 small">
-                        An unpaid balance of <strong id="modal-deferred-amount"></strong> from the previous period
-                        has been carried over and is included in your total deductions.
+                <div id="modal-deferred-notice" class="alert alert-light border border-secondary d-none mb-4">
+                    <h6 class="font-weight-bold text-dark mb-1">Deferred Balance Applied</h6>
+                    <p class="mb-0 small text-muted">
+                        An unpaid balance of <strong class="text-dark" id="modal-deferred-amount"></strong> from the previous period has been carried over and is included in your total deductions.
                     </p>
                 </div>
 
-                {{-- Earnings --}}
-                <p class="text-xs text-uppercase text-muted font-weight-bold mb-1">Earnings</p>
-                <table class="table table-sm table-borderless mb-3">
-                    <tbody id="modal-earnings-body"></tbody>
-                    <tfoot>
-                        <tr class="border-top font-weight-bold">
-                            <td>Gross Pay</td>
-                            <td class="text-right" id="modal-gross-pay"></td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                {{-- Statutory & Attendance Deductions --}}
-                <p class="text-xs text-uppercase text-muted font-weight-bold mb-1">Deductions</p>
-                <table class="table table-sm table-borderless mb-3">
-                    <tbody id="modal-deductions-body"></tbody>
-                    <tfoot>
-                        <tr class="border-top font-weight-bold">
-                            <td>Subtotal</td>
-                            <td class="text-right" id="modal-deductions-subtotal"></td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                {{-- Loan Deductions --}}
-                <div id="modal-loans-section">
-                    <p class="text-xs text-uppercase text-muted font-weight-bold mb-1">Loans</p>
-                    <table class="table table-sm table-borderless mb-3">
-                        <tbody id="modal-loans-body"></tbody>
-                        <tfoot>
-                            <tr class="border-top font-weight-bold">
-                                <td>Subtotal</td>
-                                <td class="text-right" id="modal-loans-subtotal"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-
-                {{-- Total Deductions --}}
-                <div class="d-flex justify-content-between border-top pt-2 mb-3">
-                    <span class="font-weight-bold">Total Deductions</span>
-                    <span class="font-weight-bold" id="modal-total-deductions"></span>
-                </div>
-                <div class="callout callout-info mb-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Net Pay</h5>
-                        <h4 class="mb-0 font-weight-bold" id="modal-net-pay"></h4>
+                <div class="row g-4">
+                    {{-- Earnings Column --}}
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white border-bottom py-3">
+                                <h6 class="text-muted small font-weight-bold text-uppercase mb-0">Earnings</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0">
+                                    <tbody id="modal-earnings-body"></tbody>
+                                    <tfoot class="bg-light">
+                                        <tr>
+                                            <td class="font-weight-bold text-dark ps-3 py-3">Gross Pay</td>
+                                            <td class="font-weight-bold text-dark text-end pe-3 py-3" id="modal-gross-pay"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <small id="modal-notes-wrap" class="text-muted d-none">
-                        Note: <span id="modal-notes"></span>
-                    </small>
+
+                    {{-- Deductions Column --}}
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white border-bottom py-3">
+                                <h6 class="text-muted small font-weight-bold text-uppercase mb-0">Deductions</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0">
+                                    <tbody id="modal-deductions-body"></tbody>
+                                    <tfoot class="bg-light">
+                                        <tr>
+                                            <td class="font-weight-bold text-dark ps-3 py-2">Subtotal</td>
+                                            <td class="font-weight-bold text-dark text-end pe-3 py-2" id="modal-deductions-subtotal"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                                {{-- Loans --}}
+                                <div id="modal-loans-section">
+                                    <div class="px-3 py-2 bg-light border-top border-bottom text-muted small font-weight-bold text-uppercase">Loans</div>
+                                    <table class="table table-hover mb-0">
+                                        <tbody id="modal-loans-body"></tbody>
+                                        <tfoot class="bg-light">
+                                            <tr>
+                                                <td class="font-weight-bold text-dark ps-3 py-2 border-top">Subtotal</td>
+                                                <td class="font-weight-bold text-dark text-end pe-3 py-2 border-top" id="modal-loans-subtotal"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                
+                                {{-- Total Deductions Footer --}}
+                                <div class="bg-white border-top d-flex justify-content-between align-items-center p-3">
+                                    <span class="font-weight-bold text-dark">Total Deductions</span>
+                                    <span class="font-weight-bold text-dark" id="modal-total-deductions"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Net Pay Callout --}}
+                <div class="border border-secondary rounded bg-white p-4 shadow-sm mt-4 text-center">
+                    <h6 class="text-dark font-weight-bold text-uppercase mb-1">Net Pay</h6>
+                    <h2 class="font-weight-bold text-dark mb-0 display-6" id="modal-net-pay"></h2>
+                    <div id="modal-notes-wrap" class="mt-3 pt-3 border-top d-none">
+                        <small class="text-muted font-weight-bold text-uppercase">Note: <span id="modal-notes" class="text-dark"></span></small>
+                    </div>
                 </div>
 
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-modal-download">
+            <div class="modal-footer bg-white py-3">
+                <button type="button" class="btn btn-outline-dark font-weight-bold px-4" id="btn-modal-download">
                     Download PDF
                 </button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal()">Close</button>
+                {{-- Bootstrap 5 Native Close --}}
+                <button type="button" class="btn btn-secondary font-weight-bold px-4" data-bs-dismiss="modal">Close</button>
             </div>
 
         </div>
@@ -217,7 +227,6 @@
 </div>
 
 @endsection
-
 
 @push('scripts')
 <script>
@@ -302,23 +311,24 @@ function renderTable() {
 
     filtered.forEach(p => {
         const tr = document.createElement('tr');
+        tr.className = 'border-bottom';
         tr.innerHTML = `
-            <td class="align-middle">${esc(p.period)}</td>
-            <td class="align-middle">
-                <span class="badge badge-secondary">${periodTypeLabel(p.period_type)}</span>
+            <td class="align-middle font-weight-bold text-dark ps-3 py-3">${esc(p.period)}</td>
+            <td class="align-middle py-3">
+                <span class="badge bg-light border text-dark px-2 py-1">${periodTypeLabel(p.period_type)}</span>
             </td>
-            <td class="align-middle text-right">${peso(p.gross_pay)}</td>
-            <td class="align-middle text-right">${peso(p.total_deductions)}</td>
-            <td class="align-middle text-right font-weight-bold">${peso(p.net_pay)}</td>
-            <td class="align-middle">${formatDate(p.pay_date)}</td>
-            <td class="align-middle text-center">
-                <button class="btn btn-xs btn-outline-primary mr-1" title="View Breakdown"
+            <td class="align-middle text-end font-weight-bold text-secondary py-3">${peso(p.gross_pay)}</td>
+            <td class="align-middle text-end font-weight-bold text-secondary py-3">${peso(p.total_deductions)}</td>
+            <td class="align-middle text-end font-weight-bold text-dark py-3">${peso(p.net_pay)}</td>
+            <td class="align-middle text-muted small font-weight-bold py-3">${formatDate(p.pay_date)}</td>
+            <td class="align-middle text-center pe-3 py-3">
+                <button class="btn btn-sm btn-outline-dark font-weight-bold me-1" title="View Breakdown"
                     onclick="openModal(PAYSLIPS.find(x => x.id === ${p.id}))">
-                    <i class="fas fa-eye"></i>
+                    View
                 </button>
-                <button class="btn btn-xs btn-outline-secondary" title="Download PDF"
+                <button class="btn btn-sm btn-light border text-dark font-weight-bold" title="Download PDF"
                     onclick="downloadPayslip(PAYSLIPS.find(x => x.id === ${p.id}))">
-                    <i class="fas fa-download"></i>
+                    PDF
                 </button>
             </td>
         `;
@@ -347,15 +357,15 @@ function openModal(payslip) {
     document.getElementById('modal-earnings-body').innerHTML = buildEarnings(payslip);
     document.getElementById('modal-gross-pay').textContent   = peso(payslip.gross_pay);
 
-    // Deductions — mandatory (statutory + attendance)
-    document.getElementById('modal-deductions-body').innerHTML     = buildMandatoryDeductions(payslip);
+    // Deductions
+    document.getElementById('modal-deductions-body').innerHTML       = buildMandatoryDeductions(payslip);
     document.getElementById('modal-deductions-subtotal').textContent = peso(calcMandatoryTotal(payslip));
 
-    // Deductions — loans
+    // Loans
     const { html: loanHtml, total: loanTotal } = buildLoanDeductions(payslip);
     const loansSection = document.getElementById('modal-loans-section');
     if (loanTotal > 0) {
-        document.getElementById('modal-loans-body').innerHTML    = loanHtml;
+        document.getElementById('modal-loans-body').innerHTML       = loanHtml;
         document.getElementById('modal-loans-subtotal').textContent = peso(loanTotal);
         loansSection.classList.remove('d-none');
     } else {
@@ -376,27 +386,10 @@ function openModal(payslip) {
         notesWrap.classList.add('d-none');
     }
 
+    // Bootstrap 5 Native Modal Triger
     const modalEl = document.getElementById('breakdownModal');
-    modalEl.style.display = 'block';
-    modalEl.classList.add('show');
-    document.body.classList.add('modal-open');
-
-    let backdrop = document.getElementById('modal-backdrop');
-    if (!backdrop) {
-        backdrop = document.createElement('div');
-        backdrop.id = 'modal-backdrop';
-        backdrop.className = 'modal-backdrop fade show';
-        document.body.appendChild(backdrop);
-    }
-}
-
-function closeModal() {
-    const modalEl = document.getElementById('breakdownModal');
-    modalEl.style.display = 'none';
-    modalEl.classList.remove('show');
-    document.body.classList.remove('modal-open');
-    const backdrop = document.getElementById('modal-backdrop');
-    if (backdrop) backdrop.remove();
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    bsModal.show();
 }
 
 function buildEarnings(p) {
@@ -423,7 +416,7 @@ function buildMandatoryDeductions(p) {
     if (p.undertime_deductions > 0) rows.push(row('Undertime',           p.undertime_deductions));
     if (p.absent_deductions > 0)    rows.push(row('Absent',              p.absent_deductions));
     if (p.other_deductions > 0)     rows.push(row('Other Deductions',    p.other_deductions));
-    if (p.deferred_balance > 0)     rows.push(row('Deferred Balance (Prior Period)', p.deferred_balance));
+    if (p.deferred_balance > 0)     rows.push(row('Deferred Balance',    p.deferred_balance));
     return rows.join('');
 }
 
@@ -452,9 +445,9 @@ function buildLoanDeductions(p) {
 }
 
 function row(label, amount) {
-    return `<tr>
-        <td class="text-muted">${esc(label)}</td>
-        <td class="text-right">${peso(amount)}</td>
+    return `<tr class="border-bottom">
+        <td class="text-muted small font-weight-bold text-uppercase py-2 ps-3 border-0">${esc(label)}</td>
+        <td class="text-end font-weight-bold text-secondary py-2 pe-3 border-0">${peso(amount)}</td>
     </tr>`;
 }
 
@@ -465,7 +458,7 @@ function downloadPayslip(payslip) {
         icon: 'info',
         title: 'Coming Soon',
         text: `PDF download for ${payslip.period} will be available soon.`,
-        confirmButtonColor: '#6c757d',
+        confirmButtonColor: '#1a1a1a',
     });
 }
 

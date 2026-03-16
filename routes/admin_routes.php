@@ -14,14 +14,6 @@ Route::controller(MainController::class)->group(function(){
     Route::get('/', 'index')->name('.index');
 });
 
-Route::controller(AccountController::class)
-    ->prefix('accounts')
-    ->name('.accounts')
-    ->group(function () {
-    Route::get('/',        'index') ->name('.index');
-    Route::get('/create',  'create')->name('.create');
-    Route::post('/',       'store') ->name('.store');
-});
 
 Route::controller(DepartmentController::class)
     ->prefix('departments')

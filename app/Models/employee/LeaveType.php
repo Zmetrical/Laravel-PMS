@@ -3,6 +3,8 @@
 namespace App\Models\employee;
 
 use App\Models\User;
+use App\Models\employee\LeaveRequest;
+use App\Models\employee\LeaveBalance;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;

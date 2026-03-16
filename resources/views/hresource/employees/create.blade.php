@@ -4,9 +4,9 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('hresource.employees.index') }}">Employees</a></li>
-        <li class="breadcrumb-item active">Add Employee</li>
+        <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-secondary text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('hresource.employees.index') }}" class="text-secondary text-decoration-none">Employees</a></li>
+        <li class="breadcrumb-item active text-muted">Add Employee</li>
     </ol>
 @endsection
 
@@ -14,11 +14,13 @@
 
 @include('components.alerts')
 
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title mb-0">Add New Employee</h3>
-    </div>
-    <div class="card-body">
+<div class="mb-4">
+    <h4 class="mb-0 font-weight-bold text-dark text-uppercase">Create Employee Profile</h4>
+    <small class="text-muted font-weight-bold text-uppercase">Enter personal and employment details for the new hire</small>
+</div>
+
+<div class="card shadow-sm border-0 mb-5">
+    <div class="card-body p-4 p-lg-5">
         @include('hresource.employees._form', [
             'employee'          => null,
             'scheduleTemplates' => $scheduleTemplates,

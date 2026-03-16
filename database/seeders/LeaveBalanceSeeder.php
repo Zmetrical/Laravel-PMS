@@ -9,7 +9,7 @@ class LeaveBalanceSeeder extends Seeder
 {
 public function run(): void
 {
-    DB::table('leave_balances')->truncate(); // ← add this line only
+    DB::table('leave_balances')->truncate();
     
     $now  = now();
     $year = now()->year;

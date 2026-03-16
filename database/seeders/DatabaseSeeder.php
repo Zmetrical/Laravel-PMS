@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
             ScheduleSeeder::class,
             PayrollSeeder::class,
             LoanSeeder::class,
-
+            DepartmentSeeder::class,
+            PositionSeeder::class,
+            BranchSeeder::class,
         ]);
     }
 }

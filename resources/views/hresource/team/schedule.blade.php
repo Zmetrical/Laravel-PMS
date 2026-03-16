@@ -4,8 +4,8 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-        <li class="breadcrumb-item active">Team Schedule</li>
+        <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-secondary text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item active text-muted">Team Schedule</li>
     </ol>
 @endsection
 
@@ -14,50 +14,50 @@
 @include('components.alerts')
 
 {{-- ── Section 1: Templates ──────────────────────────────────── --}}
-<div class="card mb-4">
-    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h3 class="card-title mb-0">Schedule Templates</h3>
-        <button class="btn btn-primary btn-sm" id="btn-add-template">
-            <i class="bi bi-plus me-1"></i> New Template
+<div class="card shadow-sm border-0 mb-5">
+    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Schedule Templates</h6>
+        <button class="btn btn-secondary font-weight-bold px-4 py-2 shadow-sm" id="btn-add-template">
+            New Template
         </button>
     </div>
-    <div class="card-body">
-        <div class="row g-3" id="template-cards">
-            <div class="col-12 text-center py-4 text-muted" id="template-loading">
-                <div class="spinner-border spinner-border-sm me-2"></div> Loading…
+    <div class="card-body p-4 bg-light">
+        <div class="row g-4" id="template-cards">
+            <div class="col-12 text-center py-5 text-muted font-weight-bold" id="template-loading">
+                <div class="spinner-border spinner-border-sm me-2 text-secondary"></div> Loading Templates…
             </div>
         </div>
     </div>
 </div>
 
 {{-- ── Section 2: Assignments ────────────────────────────────── --}}
-<div class="card">
-    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h3 class="card-title mb-0">Employee Assignments</h3>
-        <button class="btn btn-secondary btn-sm" id="btn-assign">
-            <i class="bi bi-people me-1"></i> Assign Schedule
+<div class="card shadow-sm border-0 mb-5">
+    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Employee Assignments</h6>
+        <button class="btn btn-outline-dark font-weight-bold px-4 py-2" id="btn-assign">
+            Assign Schedule
         </button>
     </div>
 
     {{-- Filters --}}
-    <div class="card-body border-bottom">
-        <div class="row g-2">
+    <div class="card-body bg-light border-bottom p-4">
+        <div class="row g-3">
             <div class="col-md-4">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-transparent">
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white border-end-0">
                         <i class="bi bi-search text-muted"></i>
                     </span>
-                    <input type="text" class="form-control" id="assign-search"
-                           placeholder="Search by name, ID, department…">
+                    <input type="text" class="form-control border-start-0 font-weight-bold text-dark ps-0" id="assign-search"
+                           placeholder="Search by name, ID, dept…">
                 </div>
             </div>
-            <div class="col-md-3">
-                <select class="form-select form-select-sm" id="assign-dept">
+            <div class="col-md-4">
+                <select class="form-select shadow-sm font-weight-bold text-dark" id="assign-dept">
                     <option value="">All Departments</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <select class="form-select form-select-sm" id="assign-template-filter">
+            <div class="col-md-4">
+                <select class="form-select shadow-sm font-weight-bold text-dark" id="assign-template-filter">
                     <option value="">All Schedules</option>
                 </select>
             </div>
@@ -68,85 +68,93 @@
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+                <thead class="bg-light text-muted small text-uppercase">
                     <tr>
-                        <th style="width:48px"></th>
-                        <th>Employee</th>
-                        <th>Department / Position</th>
-                        <th>Current Schedule</th>
-                        <th>Effective Date</th>
-                        <th style="width:80px">Action</th>
+                        <th class="border-0 ps-3 py-3" style="width:60px"></th>
+                        <th class="border-0 font-weight-bold py-3">Employee</th>
+                        <th class="border-0 font-weight-bold py-3">Department / Position</th>
+                        <th class="border-0 font-weight-bold py-3">Current Schedule</th>
+                        <th class="border-0 font-weight-bold py-3">Effective Date</th>
+                        <th class="border-0 font-weight-bold py-3 text-center pe-3" style="width:100px">Action</th>
                     </tr>
                 </thead>
                 <tbody id="assign-tbody">
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
-                            <div class="spinner-border spinner-border-sm me-2"></div> Loading…
+                        <td colspan="6" class="text-center py-5 bg-white text-muted font-weight-bold">
+                            <div class="spinner-border spinner-border-sm me-2 text-secondary"></div> Loading Assignments…
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="card-footer py-2">
-        <small class="text-muted" id="assign-footer">—</small>
+    <div class="card-footer bg-light py-3 border-top">
+        <small class="text-muted font-weight-bold text-uppercase" id="assign-footer">—</small>
     </div>
 </div>
 
 {{-- ── Template Modal (Add / Edit) ──────────────────────────── --}}
-<div class="modal fade" id="template-modal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="template-modal-title">New Template</h5>
+<div class="modal fade" id="template-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded">
+            <div class="modal-header bg-white border-bottom py-3">
+                <h6 class="modal-title font-weight-bold mb-0 text-dark text-uppercase" id="template-modal-title">New Template</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4 bg-light">
                 <input type="hidden" id="t-id">
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <label class="form-label small text-muted">
-                            Template Name <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control form-control-sm" id="t-name"
-                               placeholder="e.g. Morning Shift">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small text-muted">Grace Period (minutes)</label>
-                        <input type="number" class="form-control form-control-sm" id="t-grace"
-                               min="0" max="60" value="0">
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <div class="form-check mb-2">
-                            <input type="checkbox" class="form-check-input" id="t-active" checked>
-                            <label class="form-check-label small" for="t-active">Active</label>
+                
+                <div class="bg-white border rounded p-4 shadow-sm mb-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">
+                                Template Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control border-secondary font-weight-bold text-dark shadow-sm" id="t-name"
+                                   placeholder="e.g. Morning Shift">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Grace Period (min)</label>
+                            <input type="number" class="form-control shadow-sm font-weight-bold text-dark" id="t-grace"
+                                   min="0" max="60" value="0">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end pb-2">
+                            <div class="form-check form-switch mb-0">
+                                <input type="checkbox" class="form-check-input" id="t-active" checked style="cursor:pointer;">
+                                <label class="form-check-label small font-weight-bold text-uppercase ms-1 text-dark" for="t-active" style="cursor:pointer;">Active</label>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {{-- Day Rows --}}
-                <p class="text-muted small fw-semibold text-uppercase mb-2">Work Days & Shifts</p>
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle mb-0" id="days-table">
-                        <thead class="table-light">
-                            <tr>
-                                <th style="width:40px"></th>
-                                <th style="width:90px">Day</th>
-                                <th>Working Day</th>
-                                <th>Shift In</th>
-                                <th>Shift Out</th>
-                            </tr>
-                        </thead>
-                        <tbody id="days-tbody">
-                            {{-- Rendered by JS --}}
-                        </tbody>
-                    </table>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted small font-weight-bold text-uppercase">Work Days & Shifts</span>
+                </div>
+                
+                <div class="bg-white border rounded shadow-sm overflow-hidden">
+                    <div class="table-responsive mb-0">
+                        <table class="table table-hover align-middle mb-0" id="days-table">
+                            <thead class="bg-light text-muted small text-uppercase border-bottom">
+                                <tr>
+                                    <th class="border-0 ps-3 py-3" style="width:80px">Day</th>
+                                    <th class="border-0 py-3">Full Name</th>
+                                    <th class="border-0 py-3 text-center">Working Day</th>
+                                    <th class="border-0 py-3">Shift In</th>
+                                    <th class="border-0 py-3 pe-3">Shift Out</th>
+                                </tr>
+                            </thead>
+                            <tbody id="days-tbody">
+                                {{-- Rendered by JS --}}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary btn-sm" id="btn-save-template">
-                    <i class="bi bi-floppy me-1"></i> Save Template
+            <div class="modal-footer bg-white py-3">
+                <button class="btn btn-outline-dark font-weight-bold px-4" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-secondary font-weight-bold px-4" id="btn-save-template">
+                    Save Template
                 </button>
             </div>
         </div>
@@ -154,70 +162,80 @@
 </div>
 
 {{-- ── Assign Modal ──────────────────────────────────────────── --}}
-<div class="modal fade" id="assign-modal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Assign Schedule</h5>
+<div class="modal fade" id="assign-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded">
+            <div class="modal-header bg-white border-bottom py-3">
+                <h6 class="modal-title font-weight-bold mb-0 text-dark text-uppercase">Assign Schedule</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4 bg-light">
+                
                 {{-- Step 1: pick template + effective date --}}
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <label class="form-label small text-muted">
-                            Schedule Template <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select form-select-sm" id="a-template-id">
-                            <option value="">— Select Template —</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small text-muted">
-                            Effective Date <span class="text-danger">*</span>
-                        </label>
-                        <input type="date" class="form-control form-control-sm" id="a-effective-date"
-                               value="{{ date('Y-m-d') }}">
+                <div class="bg-white border rounded p-4 shadow-sm mb-4">
+                    <div class="row g-4">
+                        <div class="col-md-8">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">
+                                Schedule Template <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select border-secondary shadow-sm font-weight-bold text-dark" id="a-template-id">
+                                <option value="">— Select Template —</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">
+                                Effective Date <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" class="form-control shadow-sm font-weight-bold text-dark" id="a-effective-date"
+                                   value="{{ date('Y-m-d') }}">
+                        </div>
                     </div>
                 </div>
 
                 {{-- Step 2: select employees --}}
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <p class="text-muted small fw-semibold text-uppercase mb-0">Select Employees</p>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="input-group input-group-sm" style="width:200px">
-                            <span class="input-group-text bg-transparent">
+                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-3">
+                    <span class="text-muted small font-weight-bold text-uppercase">Select Employees</span>
+                    <div class="d-flex align-items-center flex-wrap gap-3">
+                        <select class="form-select shadow-sm font-weight-bold text-dark" id="a-emp-dept" style="width:180px;">
+                            <option value="">All Departments</option>
+                        </select>
+                        <div class="input-group shadow-sm" style="width:220px">
+                            <span class="input-group-text bg-white border-end-0">
                                 <i class="bi bi-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control" id="a-emp-search"
+                            <input type="text" class="form-control border-start-0 font-weight-bold text-dark ps-0" id="a-emp-search"
                                    placeholder="Search…">
                         </div>
-                        <div class="form-check mb-0">
-                            <input type="checkbox" class="form-check-input" id="a-select-all">
-                            <label class="form-check-label small" for="a-select-all">Select All</label>
+                        <div class="form-check mb-0 ms-2">
+                            <input type="checkbox" class="form-check-input border-secondary" id="a-select-all" style="cursor:pointer;">
+                            <label class="form-check-label small font-weight-bold text-uppercase text-dark ms-1" for="a-select-all" style="cursor:pointer;">Select All</label>
                         </div>
                     </div>
                 </div>
 
-                <div class="border rounded" style="max-height:320px;overflow-y:auto;">
-                    <table class="table table-sm table-hover align-middle mb-0">
-                        <tbody id="a-emp-tbody">
-                            <tr>
-                                <td colspan="3" class="text-center py-3 text-muted">
-                                    <div class="spinner-border spinner-border-sm me-2"></div>Loading…
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="bg-white border rounded shadow-sm overflow-hidden">
+                    <div style="max-height:350px;overflow-y:auto;">
+                        <table class="table table-hover align-middle mb-0">
+                            <tbody id="a-emp-tbody">
+                                <tr>
+                                    <td colspan="3" class="text-center py-5 text-muted font-weight-bold">
+                                        <div class="spinner-border spinner-border-sm me-2 text-secondary"></div>Loading Employees…
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="mt-2">
-                    <small class="text-muted" id="a-selected-count">0 selected</small>
+                
+                <div class="mt-3 text-end">
+                    <span class="badge bg-secondary px-3 py-2 text-uppercase font-weight-bold shadow-sm" id="a-selected-count">0 Selected</span>
                 </div>
+
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary btn-sm" id="btn-save-assign">
-                    <i class="bi bi-check2 me-1"></i> Assign
+            <div class="modal-footer bg-white py-3">
+                <button class="btn btn-outline-dark font-weight-bold px-4" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-secondary font-weight-bold px-4" id="btn-save-assign">
+                    Assign Employees
                 </button>
             </div>
         </div>
@@ -234,12 +252,12 @@ const TeamSchedule = (() => {
     const ROUTES = {
         templates:   '{{ route('hresource.team_schedule.templates') }}',
         storeT:      '{{ route('hresource.team_schedule.templates.store') }}',
-        updateT:     '{{ url('hresource/team-schedule/templates') }}',   // + /{id}
-        destroyT:    '{{ url('hresource/team-schedule/templates') }}',   // + /{id}
+        updateT:     '{{ url('hresource/team-schedule/templates') }}',
+        destroyT:    '{{ url('hresource/team-schedule/templates') }}',
         assignments: '{{ route('hresource.team_schedule.assignments') }}',
         assign:      '{{ route('hresource.team_schedule.assign') }}',
     };
-    const CSRF     = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+    const CSRF      = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
     const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const DAY_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
@@ -259,8 +277,8 @@ const TeamSchedule = (() => {
     /* ─── Lazy modals ───────────────────────────────────────── */
     let _tplModal    = null;
     let _assignModal = null;
-    const getTplModal    = () => _tplModal    ??= new bootstrap.Modal(document.getElementById('template-modal'));
-    const getAssignModal = () => _assignModal ??= new bootstrap.Modal(document.getElementById('assign-modal'));
+    const getTplModal    = () => _tplModal    ??= bootstrap.Modal.getOrCreateInstance(document.getElementById('template-modal'));
+    const getAssignModal = () => _assignModal ??= bootstrap.Modal.getOrCreateInstance(document.getElementById('assign-modal'));
 
     /* ─── State ─────────────────────────────────────────────── */
     let templates    = [];
@@ -283,7 +301,7 @@ const TeamSchedule = (() => {
             populateTemplateFilters();
         } catch (e) {
             $('template-cards').innerHTML =
-                `<div class="col-12 text-center text-danger py-3">${e.message}</div>`;
+                `<div class="col-12 text-center text-dark font-weight-bold py-5 bg-white border rounded">Error: ${e.message}</div>`;
         }
     }
 
@@ -291,7 +309,7 @@ const TeamSchedule = (() => {
         const container = $('template-cards');
 
         if (!templates.length) {
-            container.innerHTML = `<div class="col-12 text-center text-muted py-4">
+            container.innerHTML = `<div class="col-12 text-center text-muted font-weight-bold py-5 bg-white border rounded shadow-sm">
                 No templates yet. Create one to get started.</div>`;
             return;
         }
@@ -299,14 +317,11 @@ const TeamSchedule = (() => {
         container.innerHTML = templates.map(tpl => {
             const workDays = tpl.days.filter(d => d.is_working_day);
             const dayBadges = tpl.days.map(d =>
-                `<span class="badge ${d.is_working_day
-                    ? 'bg-primary bg-opacity-10 text-primary'
-                    : 'bg-secondary bg-opacity-10 text-secondary'}">
+                `<span class="badge ${d.is_working_day ? 'bg-secondary text-white' : 'bg-light border text-muted'} px-2 py-1 mb-1 me-1 text-uppercase" style="font-size: 0.65rem;">
                     ${DAY_SHORT[d.day_of_week]}
                 </span>`
             ).join('');
 
-            // Shift time from first working day
             const first = workDays[0];
             const shiftLabel = first?.shift_in
                 ? `${first.shift_in.slice(0,5)} – ${(first.shift_out ?? '').slice(0,5)}`
@@ -314,33 +329,33 @@ const TeamSchedule = (() => {
 
             return `
             <div class="col-md-4 col-lg-3">
-                <div class="card h-100 ${tpl.is_active ? '' : 'opacity-50'}">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between mb-2">
-                            <div>
-                                <div class="fw-semibold">${tpl.name}</div>
-                                <div class="text-muted small">${shiftLabel}</div>
+                <div class="card border-0 shadow-sm h-100 ${tpl.is_active ? 'bg-white' : 'bg-light opacity-75'}">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="pe-3">
+                                <div class="font-weight-bold text-dark text-uppercase mb-1 lh-sm" style="font-size: 1.05rem;">${tpl.name}</div>
+                                <div class="text-secondary small font-weight-bold">${shiftLabel}</div>
                             </div>
-                            <div class="d-flex gap-1">
-                                <button class="btn btn-sm btn-outline-secondary py-1 px-2 btn-edit-tpl"
+                            <div class="d-flex gap-2 flex-shrink-0">
+                                <button class="btn btn-sm btn-light border text-dark btn-edit-tpl px-2"
                                         data-id="${tpl.id}" title="Edit">
-                                    <i class="bi bi-pencil"></i>
+                                    <i class="bi bi-pencil-fill"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-secondary py-1 px-2 btn-del-tpl"
+                                <button class="btn btn-sm btn-light border text-danger btn-del-tpl px-2"
                                         data-id="${tpl.id}" data-name="${tpl.name}" title="Delete">
-                                    <i class="bi bi-trash"></i>
+                                    <i class="bi bi-trash-fill"></i>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="d-flex gap-1 flex-wrap mb-2">${dayBadges}</div>
+                        <div class="d-flex flex-wrap mb-3 border-top pt-3">${dayBadges}</div>
 
-                        <div class="d-flex justify-content-between text-muted small">
-                            <span>${workDays.length} working day(s)</span>
-                            <span>${tpl.employee_count ?? 0} employee(s)</span>
+                        <div class="d-flex justify-content-between text-muted small font-weight-bold text-uppercase border-top pt-3" style="font-size: 0.7rem;">
+                            <span><span class="text-dark">${workDays.length}</span> Working Days</span>
+                            <span><span class="text-dark">${tpl.employee_count ?? 0}</span> Assigned</span>
                         </div>
                         ${tpl.grace_period_minutes > 0
-                            ? `<div class="text-muted small mt-1">${tpl.grace_period_minutes} min grace</div>`
+                            ? `<div class="text-secondary small font-weight-bold text-uppercase mt-2" style="font-size: 0.7rem;">Grace Period: ${tpl.grace_period_minutes} min</div>`
                             : ''}
                     </div>
                 </div>
@@ -349,7 +364,6 @@ const TeamSchedule = (() => {
     }
 
     function populateTemplateFilters() {
-        // Filter dropdown in assignments section
         const sel = $('assign-template-filter');
         const asel = $('a-template-id');
 
@@ -366,39 +380,41 @@ const TeamSchedule = (() => {
         const tbody = $('days-tbody');
         tbody.innerHTML = Array.from({ length: 7 }, (_, i) => {
             const ex = existing.find(d => d.day_of_week === i) ?? {};
-            const isWorking = ex.is_working_day ?? (i >= 1 && i <= 6); // Mon–Sat default
+            const isWorking = ex.is_working_day ?? (i >= 1 && i <= 6);
             return `
-            <tr data-dow="${i}">
-                <td class="text-center">
-                    <span class="badge bg-secondary bg-opacity-10 text-secondary">${DAY_SHORT[i]}</span>
+            <tr class="border-bottom" data-dow="${i}">
+                <td class="text-center ps-3 py-3">
+                    <span class="badge ${isWorking ? 'bg-secondary text-white' : 'bg-light border text-muted'} px-2 py-1 text-uppercase">${DAY_SHORT[i]}</span>
                 </td>
-                <td class="text-muted small">${DAY_NAMES[i]}</td>
-                <td>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input day-working"
-                               ${isWorking ? 'checked' : ''}>
-                    </div>
+                <td class="text-dark font-weight-bold py-3">${DAY_NAMES[i]}</td>
+                <td class="text-center py-3">
+                    <input type="checkbox" class="form-check-input day-working border-secondary" style="cursor:pointer;" ${isWorking ? 'checked' : ''}>
                 </td>
-                <td>
-                    <input type="time" class="form-control form-control-sm day-in"
+                <td class="py-3">
+                    <input type="time" class="form-control shadow-sm font-weight-bold text-dark day-in"
                            value="${ex.shift_in ? ex.shift_in.slice(0,5) : ''}"
                            ${!isWorking ? 'disabled' : ''}>
                 </td>
-                <td>
-                    <input type="time" class="form-control form-control-sm day-out"
+                <td class="py-3 pe-3">
+                    <input type="time" class="form-control shadow-sm font-weight-bold text-dark day-out"
                            value="${ex.shift_out ? ex.shift_out.slice(0,5) : ''}"
                            ${!isWorking ? 'disabled' : ''}>
                 </td>
             </tr>`;
         }).join('');
 
-        // Toggle shift inputs when working day checkbox changes
         tbody.querySelectorAll('.day-working').forEach(chk => {
             chk.addEventListener('change', () => {
                 const row = chk.closest('tr');
+                const badge = row.querySelector('.badge');
+                
                 row.querySelector('.day-in').disabled  = !chk.checked;
                 row.querySelector('.day-out').disabled = !chk.checked;
-                if (!chk.checked) {
+                
+                if (chk.checked) {
+                    badge.className = 'badge bg-secondary text-white px-2 py-1 text-uppercase';
+                } else {
+                    badge.className = 'badge bg-light border text-muted px-2 py-1 text-uppercase';
                     row.querySelector('.day-in').value  = '';
                     row.querySelector('.day-out').value = '';
                 }
@@ -445,7 +461,7 @@ const TeamSchedule = (() => {
         const name = $('t-name').value.trim();
 
         if (!name) {
-            Swal.fire({ icon: 'warning', title: 'Required', text: 'Template name is required.' });
+            Swal.fire({ icon: 'warning', title: 'Required', text: 'Template name is required.', confirmButtonColor: '#1a1a1a' });
             return;
         }
 
@@ -457,7 +473,7 @@ const TeamSchedule = (() => {
         };
 
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Saving…';
+        btn.innerHTML = 'Saving…';
 
         try {
             const isEdit = !!editingTplId;
@@ -473,10 +489,10 @@ const TeamSchedule = (() => {
             await loadTemplates();
 
         } catch (e) {
-            Swal.fire({ icon: 'error', title: 'Error', text: e.message });
+            Swal.fire({ icon: 'error', title: 'Error', text: e.message, confirmButtonColor: '#1a1a1a' });
         } finally {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-floppy me-1"></i> Save Template';
+            btn.innerHTML = 'Save Template';
         }
     }
 
@@ -486,7 +502,7 @@ const TeamSchedule = (() => {
             text:  'This cannot be undone.',
             icon:  'warning',
             showCancelButton:   true,
-            confirmButtonColor: '#dc3545',
+            confirmButtonColor: '#1a1a1a',
             cancelButtonColor:  '#6c757d',
             confirmButtonText:  'Yes, Delete',
         });
@@ -499,7 +515,7 @@ const TeamSchedule = (() => {
             await loadTemplates();
             await loadAssignments();
         } catch (e) {
-            Swal.fire({ icon: 'error', title: 'Cannot Delete', text: e.message });
+            Swal.fire({ icon: 'error', title: 'Cannot Delete', text: e.message, confirmButtonColor: '#1a1a1a' });
         }
     }
 
@@ -509,8 +525,8 @@ const TeamSchedule = (() => {
 
     async function loadAssignments() {
         const tbody = $('assign-tbody');
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">
-            <div class="spinner-border spinner-border-sm me-2"></div>Loading…</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 bg-white text-muted font-weight-bold">
+            <div class="spinner-border spinner-border-sm me-2 text-secondary"></div>Loading Assignments…</td></tr>`;
 
         try {
             allEmployees = await api(ROUTES.assignments);
@@ -518,21 +534,23 @@ const TeamSchedule = (() => {
             populateDeptFilter();
             renderAssignments();
         } catch (e) {
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-3 text-danger">${e.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 bg-white text-dark font-weight-bold">Error: ${e.message}</td></tr>`;
         }
     }
 
     function populateDeptFilter() {
         const depts = [...new Set(allEmployees.map(e => e.department).filter(Boolean))].sort();
-        $('assign-dept').innerHTML = '<option value="">All Departments</option>'
-            + depts.map(d => `<option value="${d}">${d}</option>`).join('');
+        const opts = '<option value="">All Departments</option>' + depts.map(d => `<option value="${d}">${d}</option>`).join('');
+        
+        $('assign-dept').innerHTML = opts;
+        $('a-emp-dept').innerHTML  = opts;
     }
 
     function renderAssignments() {
         const tbody = $('assign-tbody');
 
         if (!filtered.length) {
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No employees found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 bg-white text-muted font-weight-bold">No employees found.</td></tr>`;
             $('assign-footer').textContent = 'No results';
             return;
         }
@@ -543,39 +561,36 @@ const TeamSchedule = (() => {
             const effDate  = schedule?.effective_date  ?? '—';
             const initials = emp.fullName.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
 
-            return `<tr>
-                <td class="text-center">
-                    <span class="d-inline-flex align-items-center justify-content-center
-                          rounded-circle bg-secondary bg-opacity-10 text-secondary fw-semibold"
-                          style="width:32px;height:32px;font-size:.7rem">
+            return `<tr class="border-bottom bg-white">
+                <td class="text-center ps-3 py-3">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-secondary text-white font-weight-bold shadow-sm" style="width:36px;height:36px;font-size:.8rem">
                         ${initials}
                     </span>
                 </td>
-                <td>
-                    <div class="fw-semibold">${emp.fullName}</div>
-                    <div class="text-muted small">${emp.id}</div>
+                <td class="py-3">
+                    <div class="font-weight-bold text-dark">${emp.fullName}</div>
+                    <div class="text-muted small font-weight-bold text-uppercase" style="font-size: 0.7rem;">${emp.id}</div>
                 </td>
-                <td>
-                    <div>${emp.department ?? '—'}</div>
-                    <div class="text-muted small">${emp.position ?? '—'}</div>
+                <td class="py-3">
+                    <div class="font-weight-bold text-dark">${emp.department ?? '—'}</div>
+                    <div class="text-muted small font-weight-bold text-uppercase" style="font-size: 0.7rem;">${emp.position ?? '—'}</div>
                 </td>
-                <td>
+                <td class="py-3">
                     ${schedule
-                        ? `<span class="badge bg-primary bg-opacity-10 text-primary">${tplName}</span>`
-                        : `<span class="text-muted small">No schedule</span>`}
+                        ? `<span class="badge bg-light border text-dark px-2 py-1">${tplName}</span>`
+                        : `<span class="badge bg-light border border-secondary text-muted px-2 py-1">No Schedule</span>`}
                 </td>
-                <td class="text-muted small">${effDate}</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-secondary py-1 px-2 btn-quick-assign"
+                <td class="text-muted small font-weight-bold text-uppercase py-3">${effDate}</td>
+                <td class="py-3 text-center pe-3">
+                    <button class="btn btn-sm btn-light border text-dark font-weight-bold px-3 btn-quick-assign shadow-sm"
                             data-id="${emp.id}" data-name="${emp.fullName}" title="Assign Schedule">
-                        <i class="bi bi-calendar-plus"></i>
+                        Assign
                     </button>
                 </td>
             </tr>`;
         }).join('');
 
-        $('assign-footer').textContent =
-            `Showing ${filtered.length} of ${allEmployees.length} employee(s)`;
+        $('assign-footer').textContent = `Showing ${filtered.length} of ${allEmployees.length} employee(s)`;
     }
 
     function applyAssignFilters() {
@@ -600,43 +615,45 @@ const TeamSchedule = (() => {
         selectedEmpIds.clear();
         $('a-select-all').checked = false;
         $('a-emp-search').value   = '';
+        $('a-emp-dept').value     = '';
 
         if (preselectedId) {
-            selectedEmpIds.add(preselectedId);
+            selectedEmpIds.add(String(preselectedId));
         }
 
         renderAssignEmployeeList();
         getAssignModal().show();
     }
 
-    function renderAssignEmployeeList(searchVal = '') {
+    function renderAssignEmployeeList() {
         const tbody = $('a-emp-tbody');
-        const q     = searchVal.toLowerCase();
+        const q     = $('a-emp-search').value.toLowerCase();
+        const dept  = $('a-emp-dept').value;
 
-        const list = allEmployees.filter(e =>
-            !q || [e.fullName, e.id, e.department]
-                    .some(v => (v ?? '').toLowerCase().includes(q))
-        );
+        const list = allEmployees.filter(e => {
+            const matchQ    = !q || [e.fullName, e.id, e.department].some(v => (v ?? '').toLowerCase().includes(q));
+            const matchDept = !dept || e.department === dept;
+            return matchQ && matchDept;
+        });
 
         if (!list.length) {
-            tbody.innerHTML = `<tr><td colspan="3" class="text-center py-3 text-muted">No employees found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-muted font-weight-bold">No employees found.</td></tr>`;
             return;
         }
 
         tbody.innerHTML = list.map(emp => `
-            <tr>
-                <td style="width:36px">
-                    <input type="checkbox" class="form-check-input a-emp-chk"
-                           value="${emp.id}" ${selectedEmpIds.has(emp.id) ? 'checked' : ''}>
+            <tr class="border-bottom">
+                <td class="ps-3 py-3" style="width:48px">
+                    <input type="checkbox" class="form-check-input a-emp-chk border-secondary" style="cursor:pointer;"
+                           value="${emp.id}" ${selectedEmpIds.has(String(emp.id)) ? 'checked' : ''}>
                 </td>
-                <td>
-                    <div class="fw-semibold small">${emp.fullName}</div>
-                    <div class="text-muted small">${emp.id}</div>
+                <td class="py-3">
+                    <div class="font-weight-bold text-dark">${emp.fullName}</div>
+                    <div class="text-muted small font-weight-bold text-uppercase" style="font-size: 0.7rem;">${emp.id}</div>
                 </td>
-                <td class="text-muted small">${emp.department ?? '—'}</td>
+                <td class="text-muted small font-weight-bold text-uppercase pe-3 py-3 text-end">${emp.department ?? '—'}</td>
             </tr>`).join('');
 
-        // Bind checkboxes
         tbody.querySelectorAll('.a-emp-chk').forEach(chk => {
             chk.addEventListener('change', () => {
                 chk.checked
@@ -650,7 +667,7 @@ const TeamSchedule = (() => {
     }
 
     function updateSelectedCount() {
-        $('a-selected-count').textContent = `${selectedEmpIds.size} selected`;
+        $('a-selected-count').textContent = `${selectedEmpIds.size} Selected`;
     }
 
     async function saveAssignment() {
@@ -659,16 +676,16 @@ const TeamSchedule = (() => {
         const effDate    = $('a-effective-date').value;
 
         if (!templateId) {
-            Swal.fire({ icon: 'warning', title: 'Required', text: 'Please select a schedule template.' });
+            Swal.fire({ icon: 'warning', title: 'Required', text: 'Please select a schedule template.', confirmButtonColor: '#1a1a1a' });
             return;
         }
         if (!selectedEmpIds.size) {
-            Swal.fire({ icon: 'warning', title: 'Required', text: 'Select at least one employee.' });
+            Swal.fire({ icon: 'warning', title: 'Required', text: 'Select at least one employee.', confirmButtonColor: '#1a1a1a' });
             return;
         }
 
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Assigning…';
+        btn.innerHTML = 'Assigning…';
 
         try {
             const data = await api(ROUTES.assign, {
@@ -680,19 +697,17 @@ const TeamSchedule = (() => {
                 }),
             });
 
-            Swal.fire({ icon: 'success', title: 'Assigned!',
-                text: data.message, timer: 2000, showConfirmButton: false,
-                toast: true, position: 'top-end' });
+            Swal.fire({ icon: 'success', title: 'Assigned!', text: data.message, timer: 2000, showConfirmButton: false, toast: true, position: 'top-end' });
 
             getAssignModal().hide();
             await loadAssignments();
-            await loadTemplates(); // refresh employee counts
+            await loadTemplates(); 
 
         } catch (e) {
-            Swal.fire({ icon: 'error', title: 'Error', text: e.message });
+            Swal.fire({ icon: 'error', title: 'Error', text: e.message, confirmButtonColor: '#1a1a1a' });
         } finally {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-check2 me-1"></i> Assign';
+            btn.innerHTML = 'Assign Employees';
         }
     }
 
@@ -721,13 +736,11 @@ const TeamSchedule = (() => {
         $('btn-assign').addEventListener('click', () => openAssignModal());
         $('btn-save-assign').addEventListener('click', saveAssignment);
 
-        // Quick-assign from table row
         $('assign-tbody').addEventListener('click', e => {
             const btn = e.target.closest('.btn-quick-assign');
             if (btn) openAssignModal(btn.dataset.id);
         });
 
-        // Select all in assign modal
         $('a-select-all').addEventListener('change', () => {
             document.querySelectorAll('.a-emp-chk').forEach(chk => {
                 chk.checked = $('a-select-all').checked;
@@ -738,10 +751,8 @@ const TeamSchedule = (() => {
             updateSelectedCount();
         });
 
-        // Search inside assign modal
-        $('a-emp-search').addEventListener('input', e =>
-            renderAssignEmployeeList(e.target.value)
-        );
+        $('a-emp-search').addEventListener('input', renderAssignEmployeeList);
+        $('a-emp-dept').addEventListener('change', renderAssignEmployeeList);
     }
 
     /* ─── Init ──────────────────────────────────────────────── */

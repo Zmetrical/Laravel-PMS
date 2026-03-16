@@ -3,6 +3,7 @@
 namespace App\Models\employee;
 
 use App\Models\User;
+use App\Models\employee\LeaveType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

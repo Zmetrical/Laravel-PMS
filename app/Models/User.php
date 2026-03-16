@@ -121,6 +121,25 @@ class User extends Authenticatable
         return $query->where('role', 'employee');
     }
 
+    public function scopeFilter(Builder $query, array $filters): Builder
+{
+    return $query
+        ->when($filters['search'] ?? null, fn($q, $s) =>
+            $q->where(fn($q) =>
+                $q->where('fullName',    'like', "%$s%")
+                  ->orWhere('id',         'like', "%$s%")
+                  ->orWhere('position',   'like', "%$s%")
+                  ->orWhere('department', 'like', "%$s%")
+            )
+        )
+        ->when($filters['department']       ?? null, fn($q, $v) => $q->where('department',       $v))
+        ->when($filters['employmentStatus'] ?? null, fn($q, $v) => $q->where('employmentStatus', $v))
+        ->when($filters['branch']           ?? null, fn($q, $v) => $q->where('branch',           $v))
+        ->when(isset($filters['isActive']) && $filters['isActive'] !== '',
+            fn($q) => $q->where('isActive', (bool) $filters['isActive'])
+        );
+}
+
     // ── Accessors ─────────────────────────────────────────────────────────────
 
     public function getDayOffNumbersAttribute(): array

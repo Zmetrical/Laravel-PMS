@@ -4,9 +4,9 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Organization</a></li>
-        <li class="breadcrumb-item active">Branch Management</li>
+        <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-secondary text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item"><a href="#" class="text-secondary text-decoration-none">Organization</a></li>
+        <li class="breadcrumb-item active text-muted">Branches</li>
     </ol>
 @endsection
 
@@ -15,16 +15,18 @@
 @include('components.alerts')
 
 {{-- Page Header --}}
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
-        <h4 class="mb-0 fw-semibold">Branch Management</h4>
-        <small class="text-muted">Manage company branches and locations</small>
+        <h4 class="mb-0 font-weight-bold text-dark">Branch Management</h4>
+        <small class="text-muted font-weight-bold text-uppercase">Manage company branches and locations</small>
     </div>
-    <button class="btn btn-secondary btn-sm" onclick="openAddModal()">Add Branch</button>
+    <button class="btn btn-secondary font-weight-bold px-4 py-2 shadow-sm" onclick="openAddModal()">
+        Add Branch
+    </button>
 </div>
 
 {{-- Stats --}}
-<div class="row g-3 mb-4">
+<div class="row g-3 mb-5">
     @foreach ([
         ['id' => 'stat-total',  'label' => 'Total Branches',  'sub_id' => 'stat-active-sub'],
         ['id' => 'stat-emp',    'label' => 'Total Employees',  'sub' => 'Across all branches'],
@@ -32,112 +34,104 @@
         ['id' => 'stat-cities', 'label' => 'Cities Covered',   'sub' => 'Unique locations'],
     ] as $c)
     <div class="col-6 col-xl-3">
-        <div class="card card-body shadow-sm">
-            <div class="text-muted small mb-1">{{ $c['label'] }}</div>
-            <div class="fw-semibold fs-5" id="{{ $c['id'] }}">—</div>
+        <div class="border rounded bg-white p-4 shadow-sm text-center h-100 d-flex flex-column justify-content-center">
+            <span class="text-muted small font-weight-bold text-uppercase mb-2">{{ $c['label'] }}</span>
+            <span class="h2 font-weight-bold text-dark mb-1" id="{{ $c['id'] }}">
+                <span class="spinner-border spinner-border-sm text-secondary"></span>
+            </span>
             @if(isset($c['sub_id']))
-                <div class="text-muted small" id="{{ $c['sub_id'] }}">—</div>
+                <span class="text-muted font-weight-bold text-uppercase" style="font-size: 0.65rem;" id="{{ $c['sub_id'] }}">Loading...</span>
             @else
-                <div class="text-muted small">{{ $c['sub'] }}</div>
+                <span class="text-muted font-weight-bold text-uppercase" style="font-size: 0.65rem;">{{ $c['sub'] }}</span>
             @endif
         </div>
     </div>
     @endforeach
 </div>
 
-{{-- Branch Cards --}}
-<div class="row g-3" id="branchGrid"></div>
+{{-- Branch Grid --}}
+<div class="row g-4" id="branchGrid">
+    <div class="col-12 text-center py-5">
+        <span class="spinner-border spinner-border-sm text-secondary me-2"></span>
+        <span class="font-weight-bold text-muted text-uppercase small">Loading Branches...</span>
+    </div>
+</div>
 
-<div id="emptyState" class="text-center py-5 d-none">
-    <p class="text-muted mb-0">No branches found. Add one to get started.</p>
+<div id="emptyState" class="text-center py-5 bg-white border rounded shadow-sm d-none">
+    <i class="bi bi-geo-alt text-muted mb-3 d-block" style="font-size: 3rem;"></i>
+    <span class="font-weight-bold text-dark d-block mb-1">No Branches Found</span>
+    <small class="text-muted font-weight-bold text-uppercase">Add your first branch to get started.</small>
 </div>
 
 {{-- ===== MODAL: ADD / EDIT ===== --}}
-<div class="modal fade" id="branchModal" tabindex="-1" aria-labelledby="branchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="branchModalLabel">Add New Branch</h5>
+<div class="modal fade" id="branchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded">
+            <div class="modal-header bg-white border-bottom py-3">
+                <h6 class="modal-title font-weight-bold mb-0 text-dark text-uppercase" id="branchModalLabel">Add New Branch</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4 bg-light">
                 <input type="hidden" id="modal-id">
-                <div class="row g-3">
-                    <div class="col-md-8">
-                        <label class="form-label fw-medium">
-                            Branch Name <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" id="modal-name" class="form-control form-control-sm"
-                            placeholder="e.g., Meycauayan Main Office">
-                        <div class="invalid-feedback">Branch name is required.</div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-medium">
-                            Branch Code <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" id="modal-code" class="form-control form-control-sm"
-                            placeholder="e.g., MYC-MAIN" maxlength="20"
-                            oninput="this.value = this.value.toUpperCase()">
-                        <div class="invalid-feedback">Branch code is required.</div>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label fw-medium">
-                            Address <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" id="modal-address" class="form-control form-control-sm"
-                            placeholder="Street address, Barangay">
-                        <div class="invalid-feedback">Address is required.</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-medium">
-                            City / Municipality <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" id="modal-city" class="form-control form-control-sm"
-                            placeholder="e.g., Meycauayan, Bulacan">
-                        <div class="invalid-feedback">City is required.</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-medium">
-                            Contact Number <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" id="modal-contact" class="form-control form-control-sm"
-                            placeholder="+63 XX XXX XXXX">
-                        <div class="invalid-feedback">Contact number is required.</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-medium">Email Address</label>
-                        <input type="email" id="modal-email" class="form-control form-control-sm"
-                            placeholder="branch@company.com">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-medium">
-                            Branch Manager <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" id="modal-manager" class="form-control form-control-sm"
-                            placeholder="Manager's full name">
-                        <div class="invalid-feedback">Branch manager is required.</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-medium">Status</label>
-                        <select id="modal-status" class="form-select form-select-sm">
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6 d-flex align-items-end pb-1">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="modal-is-main">
-                            <label class="form-check-label fw-medium" for="modal-is-main">
-                                Set as main branch
+                
+                <div class="bg-white border rounded p-4 shadow-sm mb-4">
+                    <div class="row g-4">
+                        <div class="col-md-8">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">
+                                Branch Name <span class="text-danger">*</span>
                             </label>
+                            <input type="text" id="modal-name" class="form-control border-secondary font-weight-bold text-dark shadow-sm" placeholder="e.g., Meycauayan Main Office">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">
+                                Branch Code <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" id="modal-code" class="form-control shadow-sm font-weight-bold text-dark" placeholder="e.g., MYC-MAIN" oninput="this.value = this.value.toUpperCase()">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Address <span class="text-danger">*</span></label>
+                            <input type="text" id="modal-address" class="form-control shadow-sm font-weight-bold text-dark" placeholder="Street, Barangay">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">City / Municipality <span class="text-danger">*</span></label>
+                            <input type="text" id="modal-city" class="form-control shadow-sm font-weight-bold text-dark" placeholder="e.g., Meycauayan, Bulacan">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Contact Number <span class="text-danger">*</span></label>
+                            <input type="text" id="modal-contact" class="form-control shadow-sm font-weight-bold text-dark" placeholder="+63 XX XXX XXXX">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded p-4 shadow-sm mb-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Email Address</label>
+                            <input type="email" id="modal-email" class="form-control shadow-sm font-weight-bold text-dark" placeholder="branch@company.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Branch Manager <span class="text-danger">*</span></label>
+                            <input type="text" id="modal-manager" class="form-control shadow-sm font-weight-bold text-dark" placeholder="Manager's full name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Status</label>
+                            <select id="modal-status" class="form-select shadow-sm font-weight-bold text-dark">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end pb-2">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input border-secondary" type="checkbox" id="modal-is-main" style="cursor:pointer;">
+                                <label class="form-check-label small font-weight-bold text-uppercase text-dark ms-1" for="modal-is-main" style="cursor:pointer;">Set as Main Branch</label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-secondary btn-sm" id="modal-save-btn"
-                    onclick="saveBranch()">Save Branch</button>
+            <div class="modal-footer bg-white py-3">
+                <button class="btn btn-outline-dark font-weight-bold px-4" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-secondary font-weight-bold px-4 shadow-sm" id="modal-save-btn" onclick="saveBranch()">Save Branch</button>
             </div>
         </div>
     </div>
@@ -150,19 +144,15 @@
 (function () {
     'use strict';
 
-    // ─── CONFIG ──────────────────────────────────────────────────────────────
     const CSRF = '{{ csrf_token() }}';
     const BASE = '{{ url("/admin/branches") }}';
-
     const REQUIRED = ['modal-name', 'modal-code', 'modal-address', 'modal-city', 'modal-contact', 'modal-manager'];
 
-    // ─── INIT ─────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function () {
         loadStats();
         loadBranches();
     });
 
-    // ─── STATS ────────────────────────────────────────────────────────────────
     function loadStats() {
         fetch(BASE + '/stats', { headers: { Accept: 'application/json' } })
             .then(r => r.json())
@@ -176,13 +166,11 @@
             .catch(console.error);
     }
 
-    // ─── CARDS ────────────────────────────────────────────────────────────────
     function loadBranches() {
         const grid  = document.getElementById('branchGrid');
         const empty = document.getElementById('emptyState');
 
-        grid.innerHTML = '<div class="col-12 text-center text-muted py-5">' +
-            '<span class="spinner-border spinner-border-sm me-2"></span>Loading\u2026</div>';
+        grid.innerHTML = `<div class="col-12 text-center py-5"><span class="spinner-border spinner-border-sm text-secondary me-2"></span><span class="font-weight-bold text-muted text-uppercase small">Loading Branches...</span></div>`;
         empty.classList.add('d-none');
 
         fetch(BASE + '/list', { headers: { Accept: 'application/json' } })
@@ -196,98 +184,94 @@
                 grid.innerHTML = data.map(buildCard).join('');
             })
             .catch(function () {
-                grid.innerHTML = '<div class="col-12 text-center text-muted py-4">Failed to load branches.</div>';
+                grid.innerHTML = `<div class="col-12 text-center py-5 bg-white border rounded shadow-sm text-dark font-weight-bold">Failed to load branches.</div>`;
             });
     }
 
     function buildCard(b) {
         const statusBadge = b.status === 'active'
-            ? '<span class="badge bg-secondary">Active</span>'
-            : '<span class="badge bg-primary">Inactive</span>';
+            ? `<span class="badge bg-secondary px-2 py-1 text-uppercase">Active</span>`
+            : `<span class="badge bg-light border text-muted px-2 py-1 text-uppercase">Inactive</span>`;
 
         const mainBadge = b.is_main
-            ? '<span class="badge bg-secondary ms-1" style="font-size:.65rem">MAIN</span>'
+            ? `<span class="badge bg-dark text-white ms-2 text-uppercase" style="font-size:0.6rem; letter-spacing: 0.5px;">Main</span>`
             : '';
 
-        const emailRow = b.email
-            ? '<li class="d-flex gap-2 mb-1">' +
-              '<i class="bi bi-envelope text-muted flex-shrink-0 mt-1"></i>' +
-              '<span class="text-truncate small">' + x(b.email) + '</span></li>'
-            : '';
+        return `
+        <div class="col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <div class="font-weight-bold text-dark text-uppercase mb-1" style="font-size: 1.05rem;">${x(b.name)}${mainBadge}</div>
+                            <span class="badge bg-light border text-dark text-uppercase px-2 py-1" style="font-size: 0.65rem;">${x(b.code)}</span>
+                        </div>
+                        ${statusBadge}
+                    </div>
 
-        return '<div class="col-md-6 col-xl-4">' +
-            '<div class="card shadow-sm h-100">' +
-            '<div class="card-body d-flex flex-column">' +
+                    <div class="bg-light border rounded p-3 mb-4">
+                        <div class="d-flex gap-3 mb-2">
+                            <i class="bi bi-geo-alt-fill text-muted"></i>
+                            <div class="small font-weight-bold text-dark">
+                                ${x(b.address)}<br>
+                                <span class="text-secondary text-uppercase" style="font-size: 0.7rem;">${x(b.city)}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 mb-2">
+                            <i class="bi bi-telephone-fill text-muted"></i>
+                            <div class="small font-weight-bold text-dark">${x(b.contact_number)}</div>
+                        </div>
+                        ${b.email ? `
+                        <div class="d-flex gap-3 mb-2">
+                            <i class="bi bi-envelope-fill text-muted"></i>
+                            <div class="small font-weight-bold text-dark text-truncate">${x(b.email)}</div>
+                        </div>` : ''}
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-person-badge-fill text-muted"></i>
+                            <div class="small font-weight-bold text-dark">
+                                <span class="text-muted text-uppercase" style="font-size: 0.65rem;">Manager:</span> ${x(b.manager_name)}
+                            </div>
+                        </div>
+                    </div>
 
-            // Header
-            '<div class="d-flex justify-content-between align-items-start mb-3">' +
-                '<div>' +
-                    '<div class="fw-semibold">' + x(b.name) + mainBadge + '</div>' +
-                    '<small class="text-muted">' + x(b.code) + '</small>' +
-                '</div>' +
-                statusBadge +
-            '</div>' +
+                    <div class="row g-2 text-center mb-4 mt-auto">
+                        <div class="col-6">
+                            <div class="border rounded bg-white py-2 shadow-sm">
+                                <div class="font-weight-bold text-dark h5 mb-0">${b.employee_count}</div>
+                                <div class="text-muted font-weight-bold text-uppercase" style="font-size: 0.65rem;">Employees</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded bg-white py-2 shadow-sm">
+                                <div class="font-weight-bold text-dark h5 mb-0">${b.dept_count}</div>
+                                <div class="text-muted font-weight-bold text-uppercase" style="font-size: 0.65rem;">Departments</div>
+                            </div>
+                        </div>
+                    </div>
 
-            // Details
-            '<ul class="list-unstyled flex-grow-1 mb-3">' +
-                '<li class="d-flex gap-2 mb-1">' +
-                    '<i class="bi bi-geo-alt text-muted flex-shrink-0 mt-1"></i>' +
-                    '<span class="small">' + x(b.address) + '<br>' +
-                    '<span class="text-muted">' + x(b.city) + '</span></span>' +
-                '</li>' +
-                '<li class="d-flex gap-2 mb-1">' +
-                    '<i class="bi bi-telephone text-muted flex-shrink-0 mt-1"></i>' +
-                    '<span class="small">' + x(b.contact_number) + '</span>' +
-                '</li>' +
-                emailRow +
-                '<li class="d-flex gap-2 mb-1">' +
-                    '<i class="bi bi-person text-muted flex-shrink-0 mt-1"></i>' +
-                    '<span class="small"><span class="text-muted">Manager:</span> ' + x(b.manager_name) + '</span>' +
-                '</li>' +
-            '</ul>' +
-
-            // Counts
-            '<div class="row g-2 text-center mb-3">' +
-                '<div class="col-6">' +
-                    '<div class="border rounded py-2">' +
-                        '<div class="fw-semibold">' + b.employee_count + '</div>' +
-                        '<div class="text-muted" style="font-size:.72rem">Employees</div>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="col-6">' +
-                    '<div class="border rounded py-2">' +
-                        '<div class="fw-semibold">' + b.dept_count + '</div>' +
-                        '<div class="text-muted" style="font-size:.72rem">Departments</div>' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-
-            // Actions
-            '<div class="d-flex gap-2">' +
-                '<button class="btn btn-outline-secondary btn-sm flex-grow-1" ' +
-                    'onclick="openEditModal(' + b.id + ')">Edit</button>' +
-                '<button class="btn btn-outline-secondary btn-sm" ' +
-                    'onclick="deleteBranch(' + b.id + ', \'' + x(b.name) + '\', ' + b.employee_count + ', ' + (b.is_main ? 'true' : 'false') + ')" ' +
-                    'title="Delete"><i class="bi bi-trash"></i></button>' +
-            '</div>' +
-
-            '</div></div></div>';
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-dark font-weight-bold btn-sm flex-grow-1 py-2" onclick="openEditModal(${b.id})">Edit Branch</button>
+                        <button class="btn btn-outline-dark btn-sm px-3 py-2" onclick="deleteBranch(${b.id}, '${x(b.name)}', ${b.employee_count}, ${b.is_main})" title="Delete">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
     }
 
-    // ─── ADD MODAL ────────────────────────────────────────────────────────────
     window.openAddModal = function () {
         resetForm();
         setText('branchModalLabel', 'Add New Branch');
         document.getElementById('modal-save-btn').textContent = 'Save Branch';
-        new bootstrap.Modal(document.getElementById('branchModal')).show();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('branchModal')).show();
     };
 
-    // ─── EDIT MODAL ───────────────────────────────────────────────────────────
     window.openEditModal = function (id) {
         fetch(BASE + '/list', { headers: { Accept: 'application/json' } })
             .then(r => r.json())
             .then(function (data) {
-                const b = data.find(function (r) { return r.id === id; });
+                const b = data.find(r => r.id === id);
                 if (!b) return;
 
                 resetForm();
@@ -302,13 +286,12 @@
                 document.getElementById('modal-email').value    = b.email;
                 document.getElementById('modal-manager').value  = b.manager_name;
                 document.getElementById('modal-status').value   = b.status;
-                document.getElementById('modal-is-main').checked= b.is_main;
+                document.getElementById('modal-is-main').checked = b.is_main;
 
-                new bootstrap.Modal(document.getElementById('branchModal')).show();
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('branchModal')).show();
             });
     };
 
-    // ─── SAVE ─────────────────────────────────────────────────────────────────
     window.saveBranch = function () {
         if (!validateForm()) return;
 
@@ -325,18 +308,13 @@
             is_main:        document.getElementById('modal-is-main').checked,
         };
 
-        const btn    = document.getElementById('modal-save-btn');
-        btn.disabled = true;
-        const orig   = btn.textContent;
-        btn.textContent = 'Saving\u2026';
+        const btn     = document.getElementById('modal-save-btn');
+        btn.disabled  = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving…';
 
         fetch(id ? BASE + '/' + id : BASE, {
             method:  id ? 'PATCH' : 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept':       'application/json',
-                'X-CSRF-TOKEN': CSRF,
-            },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF },
             body: JSON.stringify(body),
         })
         .then(handleJson)
@@ -349,31 +327,28 @@
         .catch(handleError)
         .finally(function () {
             btn.disabled    = false;
-            btn.textContent = orig;
+            btn.textContent = 'Save Branch';
         });
     };
 
-    // ─── DELETE ───────────────────────────────────────────────────────────────
     window.deleteBranch = function (id, name, empCount, isMain) {
         if (isMain) {
-            Swal.fire({ icon: 'warning', title: 'Cannot Delete',
-                text: 'Cannot delete the main branch. Set another branch as main first.' });
+            Swal.fire({ icon: 'warning', title: 'Cannot Delete', text: 'Cannot delete the main branch. Set another branch as main first.', confirmButtonColor: '#1a1a1a' });
             return;
         }
         if (empCount > 0) {
-            Swal.fire({ icon: 'warning', title: 'Cannot Delete',
-                text: '"' + name + '" has ' + empCount + ' active employee(s). Reassign them first.' });
+            Swal.fire({ icon: 'warning', title: 'Cannot Delete', text: '"' + name + '" has ' + empCount + ' active employee(s). Reassign them first.', confirmButtonColor: '#1a1a1a' });
             return;
         }
 
         Swal.fire({
             title: 'Delete Branch?',
-            html:  '<strong>' + x(name) + '</strong> will be permanently removed.',
+            html:  `<strong>${x(name)}</strong> will be permanently removed.`,
             icon:  'question',
             showCancelButton:   true,
             confirmButtonText:  'Yes, Delete',
-            confirmButtonColor: '#6c757d',
-            reverseButtons:     true,
+            confirmButtonColor: '#1a1a1a',
+            cancelButtonColor:  '#6c757d',
         }).then(function (result) {
             if (!result.isConfirmed) return;
 
@@ -391,7 +366,6 @@
         });
     };
 
-    // ─── FORM HELPERS ─────────────────────────────────────────────────────────
     function resetForm() {
         document.getElementById('modal-id').value        = '';
         document.getElementById('modal-name').value      = '';
@@ -403,14 +377,12 @@
         document.getElementById('modal-manager').value   = '';
         document.getElementById('modal-status').value    = 'active';
         document.getElementById('modal-is-main').checked = false;
-        REQUIRED.forEach(function (id) {
-            document.getElementById(id).classList.remove('is-invalid');
-        });
+        REQUIRED.forEach(id => document.getElementById(id).classList.remove('is-invalid'));
     }
 
     function validateForm() {
         let valid = true;
-        REQUIRED.forEach(function (id) {
+        REQUIRED.forEach(id => {
             const el = document.getElementById(id);
             if (!el.value.trim()) {
                 el.classList.add('is-invalid');
@@ -422,27 +394,19 @@
         return valid;
     }
 
-    // ─── UTILITIES ────────────────────────────────────────────────────────────
     function handleJson(r) {
-        return r.json().then(function (data) {
+        return r.json().then(data => {
             if (!r.ok) return Promise.reject(data);
             return data;
         });
     }
 
     function handleError(err) {
-        Swal.fire({
-            icon: 'error', title: 'Error',
-            text: err && err.message ? err.message : 'Something went wrong.',
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: err && err.message ? err.message : 'Something went wrong.', confirmButtonColor: '#1a1a1a' });
     }
 
     function toast(msg) {
-        Swal.fire({
-            toast: true, position: 'top-end', icon: 'success',
-            title: msg, showConfirmButton: false,
-            timer: 2800, timerProgressBar: true,
-        });
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: msg, showConfirmButton: false, timer: 2800, timerProgressBar: true });
     }
 
     function setText(id, val) {
@@ -452,10 +416,7 @@
 
     function x(str) {
         if (str == null) return '';
-        return String(str)
-            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     }
 
 })();

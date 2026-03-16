@@ -246,14 +246,6 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('admin.accounts.index') }}"
-                           class="nav-link {{ request()->routeIs('admin.accounts.*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-person-gear"></i>
-                            <p>Accounts</p>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
                         <a href="{{ route('admin.departments.index') }}"
                            class="nav-link {{ request()->routeIs('admin.departments.*') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-diagram-3-fill"></i>

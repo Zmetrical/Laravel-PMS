@@ -4,8 +4,8 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-        <li class="breadcrumb-item active">Leave Management</li>
+        <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-secondary text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item active text-muted">Leave Management</li>
     </ol>
 @endsection
 
@@ -13,37 +13,37 @@
 
 {{-- ── Flash Messages ─────────────────────────────────────────────────── --}}
 @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
+    <div class="alert alert-light border border-secondary d-flex justify-content-between align-items-center mb-4" role="alert">
+        <span class="font-weight-bold text-dark">{{ session('success') }}</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 @if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
+    <div class="alert alert-light border border-dark d-flex justify-content-between align-items-center mb-4" role="alert">
+        <span class="font-weight-bold text-muted">{{ session('error') }}</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 @if ($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ $errors->first() }}
+    <div class="alert alert-light border border-dark d-flex justify-content-between align-items-center mb-4" role="alert">
+        <span class="font-weight-bold text-muted">{{ $errors->first() }}</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
 {{-- ── Page Header ─────────────────────────────────────────────────────── --}}
-<div class="d-flex align-items-center justify-content-between mb-3">
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
     <div>
-        <h4 class="mb-0">Leave Management</h4>
-        <small class="text-muted">File leave requests and track your leave credits</small>
+        <h4 class="mb-0 font-weight-bold text-dark">Leave Management</h4>
+        <small class="text-muted font-weight-bold text-uppercase">File leave requests and track your leave credits</small>
     </div>
-    <button class="btn btn-secondary" id="toggleFormBtn" onclick="toggleForm()">
+    <button class="btn btn-secondary font-weight-bold px-4 py-2 shadow-sm" id="toggleFormBtn" onclick="toggleForm()">
         Apply for Leave
     </button>
 </div>
 
 {{-- ── Leave Balance Summary Cards ─────────────────────────────────────── --}}
-<div class="row g-3 mb-3">
+<div class="row g-3 mb-4">
     @foreach ($leaveTypes as $lt)
         @php
             $bal   = $balances->get($lt->id);
@@ -52,26 +52,21 @@
             $total = $bal ? $bal->total_entitled : $lt->max_days_per_year;
         @endphp
         <div class="col-md-3">
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="text-muted small">{{ $lt->name }}</div>
-                    <div class="fw-bold fs-5">{{ number_format($avail, 0) }} days</div>
-                    <div class="text-muted" style="font-size:.75rem">
-                        Used: {{ $used }} &nbsp;/&nbsp; Total: {{ $total }}
-                    </div>
-                </div>
+            <div class="border rounded bg-white p-4 shadow-sm text-center h-100 d-flex flex-column justify-content-center">
+                <span class="text-muted small font-weight-bold text-uppercase mb-2">{{ $lt->name }}</span>
+                <span class="h3 font-weight-bold text-dark mb-1">{{ number_format($avail, 0) }} <span class="h6 text-muted">days</span></span>
+                <span class="text-muted" style="font-size: 0.7rem;">Used: {{ $used }} <span class="mx-1">|</span> Total: {{ $total }}</span>
             </div>
         </div>
     @endforeach
 </div>
 
 {{-- ── Leave Application Form ───────────────────────────────────────────── --}}
-<div class="card mb-3 {{ $errors->any() || old('leave_type_id') ? '' : 'd-none' }}"
-     id="leaveFormCard">
-    <div class="card-header">
-        <h5 class="card-title mb-0">New Leave Application</h5>
+<div class="card shadow-sm border-0 mb-5 {{ $errors->any() || old('leave_type_id') ? '' : 'd-none' }}" id="leaveFormCard">
+    <div class="card-header bg-white border-bottom py-3">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">New Leave Application</h6>
     </div>
-    <div class="card-body">
+    <div class="card-body p-4">
         <form method="POST" action="{{ route('employee.leave.store') }}">
             @csrf
             {{-- Hidden fields populated by JS --}}
@@ -82,19 +77,19 @@
 
                 {{-- ── LEFT: Calendar ─────────────────────────────────── --}}
                 <div class="col-lg-6">
-                    <label class="form-label fw-semibold">Select Leave Dates</label>
+                    <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Select Leave Dates</label>
 
                     {{-- Month navigation --}}
-                    <div class="d-flex align-items-center justify-content-between mb-2 border rounded px-3 py-2 bg-light">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="prevMonth()">&#8592;</button>
-                        <span class="fw-semibold" id="calMonthLabel"></span>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="nextMonth()">&#8594;</button>
+                    <div class="d-flex align-items-center justify-content-between mb-3 border rounded px-3 py-2 bg-light">
+                        <button type="button" class="btn btn-sm btn-outline-secondary px-3" onclick="prevMonth()"><</button>
+                        <span class="font-weight-bold text-dark text-uppercase" id="calMonthLabel"></span>
+                        <button type="button" class="btn btn-sm btn-outline-secondary px-3" onclick="nextMonth()">></button>
                     </div>
 
                     {{-- Weekday headers --}}
-                    <div class="row g-1 mb-1 text-center">
+                    <div class="row g-1 mb-2 border-bottom pb-2 text-center">
                         @foreach (['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $day)
-                            <div class="col" style="font-size:.7rem;font-weight:600;color:#6c757d;text-transform:uppercase">
+                            <div class="col text-muted small font-weight-bold text-uppercase">
                                 {{ $day }}
                             </div>
                         @endforeach
@@ -104,27 +99,18 @@
                     <div id="calGrid"></div>
 
                     {{-- Selected range info --}}
-                    <div class="mt-2" id="selectedRangeInfo"></div>
+                    <div class="mt-3" id="selectedRangeInfo"></div>
 
                     {{-- Legend --}}
-                    <div class="mt-2 p-2 border rounded bg-light">
-                        <div class="row g-1" style="font-size:.7rem">
-                            <div class="col-6 d-flex align-items-center gap-1">
-                                <div style="width:12px;height:12px;border-radius:3px;background:rgba(var(--bs-primary-rgb),.18);border:1px solid rgba(var(--bs-primary-rgb),.5)"></div>
-                                <span class="text-muted">Selected</span>
-                            </div>
-                            <div class="col-6 d-flex align-items-center gap-1">
-                                <div style="width:12px;height:12px;border-radius:3px;background:rgba(var(--bs-primary-rgb),.07);border:1px solid rgba(var(--bs-primary-rgb),.25)"></div>
-                                <span class="text-muted">In Range</span>
-                            </div>
-                            <div class="col-6 d-flex align-items-center gap-1">
-                                <div style="width:12px;height:12px;border-radius:3px;background:rgba(var(--bs-secondary-rgb),.2);border:1px solid var(--bs-secondary)"></div>
-                                <span class="text-muted">Already Filed</span>
-                            </div>
-                            <div class="col-6 d-flex align-items-center gap-1">
-                                <div style="width:12px;height:12px;border-radius:3px;background:#f1f1f1;border:1px solid #dee2e6;opacity:.5"></div>
-                                <span class="text-muted">Day Off</span>
-                            </div>
+                    <div class="d-flex flex-wrap align-items-center pt-3 mt-4 border-top text-muted small font-weight-bold text-uppercase gap-3">
+                        <div class="d-flex align-items-center">
+                            <span class="p-1 border border-secondary bg-secondary rounded-circle me-2"></span> Selected
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="p-1 border border-dark bg-light rounded-circle me-2"></span> In Range
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="p-1 border border-light bg-light rounded-circle me-2"></span> Filed / Past / Off
                         </div>
                     </div>
                 </div>
@@ -133,13 +119,9 @@
                 <div class="col-lg-6">
 
                     {{-- Leave Type --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Leave Type</label>
-                        <select name="leave_type_id"
-                                id="leaveTypeSelect"
-                                class="form-select @error('leave_type_id') is-invalid @enderror"
-                                onchange="onTypeChange()"
-                                required>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Leave Type</label>
+                        <select name="leave_type_id" id="leaveTypeSelect" class="form-select border-secondary shadow-sm font-weight-bold @error('leave_type_id') is-invalid @enderror" onchange="onTypeChange()" required>
                             <option value="">— Select Leave Type —</option>
                             @foreach ($leaveTypes as $lt)
                                 @php
@@ -160,62 +142,56 @@
                             @endforeach
                         </select>
                         @error('leave_type_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback font-weight-bold">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    {{-- Balance info box (mirrors OT type display box) --}}
-                    <div class="mb-3">
-                        <div class="border rounded p-3 bg-light" id="balanceInfoBox">
-                            <span class="text-muted small">Select a leave type to see your balance</span>
+                    {{-- Balance info box --}}
+                    <div class="mb-4">
+                        <div class="border rounded p-3 bg-light text-center d-flex flex-column justify-content-center" style="min-height: 100px;" id="balanceInfoBox">
+                            <span class="text-muted small font-weight-bold">Select a leave type to see your balance</span>
                         </div>
                     </div>
 
-                    {{-- Leave Summary box (mirrors OT estimated pay box) --}}
-                    <div class="mb-3 d-none" id="leaveSummaryBox">
-                        <div class="border rounded p-3 bg-light">
-                            <p class="mb-1 small fw-semibold">Leave Summary</p>
-                            <div class="d-flex justify-content-between small mb-1">
-                                <span class="text-muted">Start Date</span>
-                                <span class="fw-semibold" id="summaryStart">—</span>
+                    {{-- Leave Summary box --}}
+                    <div class="mb-4 d-none" id="leaveSummaryBox">
+                        <div class="border border-secondary rounded p-3 bg-white shadow-sm">
+                            <p class="text-muted small font-weight-bold text-uppercase mb-3 text-center border-bottom pb-2">Leave Summary</p>
+                            <div class="d-flex justify-content-between small mb-2">
+                                <span class="text-muted font-weight-bold text-uppercase">Start Date</span>
+                                <span class="font-weight-bold text-dark" id="summaryStart">—</span>
                             </div>
-                            <div class="d-flex justify-content-between small mb-1">
-                                <span class="text-muted">End Date</span>
-                                <span class="fw-semibold" id="summaryEnd">—</span>
+                            <div class="d-flex justify-content-between small mb-2">
+                                <span class="text-muted font-weight-bold text-uppercase">End Date</span>
+                                <span class="font-weight-bold text-dark" id="summaryEnd">—</span>
                             </div>
-                            <div class="d-flex justify-content-between small mb-1">
-                                <span class="text-muted">Working Days</span>
-                                <span class="fw-bold" id="summaryDays">—</span>
+                            <div class="d-flex justify-content-between small mb-2">
+                                <span class="text-muted font-weight-bold text-uppercase">Working Days</span>
+                                <span class="font-weight-bold text-dark" id="summaryDays">—</span>
                             </div>
-                            <div class="d-flex justify-content-between small">
-                                <span class="text-muted">Remaining After</span>
-                                <span class="fw-bold" id="summaryRemaining">—</span>
+                            <div class="d-flex justify-content-between small mt-3 pt-2 border-top">
+                                <span class="text-dark font-weight-bold text-uppercase">Remaining After</span>
+                                <span class="font-weight-bold text-dark h5 mb-0" id="summaryRemaining">—</span>
                             </div>
                         </div>
                     </div>
 
                     {{-- Reason --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            Reason <span class="text-muted fw-normal">(Required)</span>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">
+                            Reason <span class="text-danger">*</span>
                         </label>
-                        <textarea name="reason"
-                                  class="form-control @error('reason') is-invalid @enderror"
-                                  rows="4"
-                                  placeholder="Briefly describe the reason for your leave..."
-                                  required>{{ old('reason') }}</textarea>
+                        <textarea name="reason" class="form-control border shadow-sm p-3 @error('reason') is-invalid @enderror" rows="4" placeholder="Briefly describe the reason for your leave..." required>{{ old('reason') }}</textarea>
                         @error('reason')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback font-weight-bold">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary flex-grow-1"
-                                id="submitLeaveBtn" disabled>
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-secondary btn-lg flex-grow-1 font-weight-bold shadow-sm" id="submitLeaveBtn" disabled>
                             Submit Request
                         </button>
-                        <button type="button" class="btn btn-outline-secondary px-4"
-                                onclick="toggleForm()">
+                        <button type="button" class="btn btn-outline-dark btn-lg px-4 font-weight-bold" onclick="toggleForm()">
                             Cancel
                         </button>
                     </div>
@@ -227,18 +203,18 @@
 </div>
 
 {{-- ── Leave History ────────────────────────────────────────────────────── --}}
-<div class="card">
-    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h5 class="card-title mb-0">Leave Request History</h5>
-        <small class="text-muted">{{ $history->count() }} record(s)</small>
+<div class="card shadow-sm border-0 mb-5">
+    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Leave Request History</h6>
+        <span class="badge bg-light border text-dark">{{ $history->count() }} record(s)</span>
     </div>
-    <div class="card-body pb-2">
+    <div class="card-body p-4">
 
         {{-- Filters --}}
-        <form method="GET" action="{{ route('employee.leave.index') }}" class="row g-2 mb-3">
+        <form method="GET" action="{{ route('employee.leave.index') }}" class="row g-3 mb-4">
             <div class="col-md-4">
-                <label class="form-label small">Status</label>
-                <select name="status" class="form-select form-select-sm">
+                <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Status</label>
+                <select name="status" class="form-select shadow-sm">
                     <option value="">All Status</option>
                     @foreach (['pending', 'approved', 'rejected'] as $s)
                         <option value="{{ $s }}" {{ request('status') === $s ? 'selected' : '' }}>
@@ -248,8 +224,8 @@
                 </select>
             </div>
             <div class="col-md-4">
-                <label class="form-label small">Leave Type</label>
-                <select name="type" class="form-select form-select-sm">
+                <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Leave Type</label>
+                <select name="type" class="form-select shadow-sm">
                     <option value="">All Types</option>
                     @foreach ($leaveTypes as $lt)
                         <option value="{{ $lt->id }}" {{ request('type') == $lt->id ? 'selected' : '' }}>
@@ -259,69 +235,69 @@
                 </select>
             </div>
             <div class="col-md-4 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-secondary btn-sm flex-grow-1">Filter</button>
-                <a href="{{ route('employee.leave.index') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+                <button type="submit" class="btn btn-secondary flex-grow-1 font-weight-bold shadow-sm">Filter</button>
+                <a href="{{ route('employee.leave.index') }}" class="btn btn-outline-dark font-weight-bold">Clear</a>
             </div>
         </form>
 
         {{-- Table --}}
         @if ($history->isEmpty())
-            <div class="text-center text-muted py-5">
-                No leave requests found.
+            <div class="text-center text-muted py-5 bg-light rounded border">
+                <span class="font-weight-bold d-block">No leave requests found.</span>
             </div>
         @else
             <div class="table-responsive">
-                <table class="table table-bordered table-hover table-sm align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-muted small text-uppercase">
                         <tr>
-                            <th>Type</th>
-                            <th>Start</th>
-                            <th>End</th>
-                            <th>Days</th>
-                            <th>Reason</th>
-                            <th>Status</th>
-                            <th>Submitted</th>
-                            <th>Reviewed By</th>
-                            <th class="text-center">Action</th>
+                            <th class="border-0 font-weight-bold ps-3 py-3">Type</th>
+                            <th class="border-0 font-weight-bold py-3">Start</th>
+                            <th class="border-0 font-weight-bold py-3">End</th>
+                            <th class="border-0 font-weight-bold py-3">Days</th>
+                            <th class="border-0 font-weight-bold py-3">Reason</th>
+                            <th class="border-0 font-weight-bold py-3">Status</th>
+                            <th class="border-0 font-weight-bold py-3">Submitted</th>
+                            <th class="border-0 font-weight-bold py-3">Reviewed By</th>
+                            <th class="border-0 font-weight-bold py-3 text-center pe-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($history as $lr)
-                            <tr>
-                                <td class="fw-semibold text-nowrap">
+                            <tr class="border-bottom">
+                                <td class="font-weight-bold text-dark ps-3 text-nowrap">
                                     {{ $lr->leaveType?->name ?? '—' }}
                                 </td>
-                                <td class="text-nowrap">{{ $lr->start_date->format('M d, Y') }}</td>
-                                <td class="text-nowrap">{{ $lr->end_date->format('M d, Y') }}</td>
-                                <td>{{ $lr->days }}d</td>
+                                <td class="text-nowrap font-weight-bold text-secondary">{{ $lr->start_date->format('M d, Y') }}</td>
+                                <td class="text-nowrap font-weight-bold text-secondary">{{ $lr->end_date->format('M d, Y') }}</td>
+                                <td class="font-weight-bold">{{ $lr->days }} <span class="text-muted small fw-normal">days</span></td>
                                 <td class="text-muted small" style="max-width:180px;white-space:normal">
                                     {{ $lr->reason }}
                                     @if ($lr->isRejected() && $lr->rejection_reason)
-                                        <div class="text-danger mt-1">
-                                            <i class="bi bi-x-circle me-1"></i>{{ $lr->rejection_reason }}
+                                        <div class="text-dark font-weight-bold mt-1 border-top pt-1">
+                                            Reason: {{ $lr->rejection_reason }}
                                         </div>
                                     @endif
                                 </td>
                                 <td class="text-nowrap">
                                     @switch($lr->status)
                                         @case('pending')
-                                            <span class="badge bg-secondary">Pending</span>
+                                            <span class="badge bg-light border text-dark px-2 py-1">Pending</span>
                                             @break
                                         @case('approved')
-                                            <span class="badge bg-primary">Approved</span>
+                                            <span class="badge bg-secondary px-2 py-1">Approved</span>
                                             @break
                                         @case('rejected')
-                                            <span class="badge bg-secondary">Rejected</span>
+                                            <span class="badge bg-light border text-muted px-2 py-1">Rejected</span>
                                             @break
                                     @endswitch
                                 </td>
-                                <td class="text-nowrap text-muted small">
+                                <td class="text-nowrap text-muted small font-weight-bold">
                                     {{ $lr->created_at->format('M d, Y') }}
                                 </td>
-                                <td class="text-nowrap text-muted small">
+                                <td class="text-nowrap text-dark small font-weight-bold">
                                     {{ $lr->reviewer?->fullName ?? '—' }}
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center pe-3">
                                     @if ($lr->isPending())
                                         <form method="POST"
                                               action="{{ route('employee.leave.destroy', $lr->id) }}"
@@ -329,9 +305,7 @@
                                             @csrf
                                             @method('DELETE')
                                         </form>
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                onclick="confirmWithdraw({{ $lr->id }})">
+                                        <button type="button" class="btn btn-sm btn-outline-dark font-weight-bold" onclick="confirmWithdraw({{ $lr->id }})">
                                             Cancel
                                         </button>
                                     @else
@@ -356,14 +330,13 @@
    SERVER DATA
    ───────────────────────────────────────────────────────────── */
 const DAY_OFFS   = @json($restDaysArray ?? [0, 6]);
-// Filed dates: all pending/approved requests for this user, flattened to individual dates
-const FILED_DATES = @json($filedDates ?? []);  // array of "YYYY-MM-DD" strings
+const FILED_DATES = @json($filedDates ?? []);
 
 /* ─────────────────────────────────────────────────────────────
    STATE
    ───────────────────────────────────────────────────────────── */
 let calMonth    = new Date(); calMonth.setDate(1);
-let startDate   = null;  // "YYYY-MM-DD"
+let startDate   = null;
 let endDate     = null;
 let formVisible = {{ $errors->any() || old('leave_type_id') ? 'true' : 'false' }};
 
@@ -415,53 +388,64 @@ function renderCalendar() {
 
     let html = '';
     for (let row = 0; row < 6; row++) {
-        html += '<div class="row g-1 mb-1">';
+        html += '<div class="row g-2 mb-2 align-items-stretch">';
         for (let col = 0; col < 7; col++) {
             const cell = cells[row*7+col];
+            
             if (!cell.cur || !cell.ds) {
-                html += `<div class="col"><div class="border rounded text-center opacity-25"
-                    style="min-height:46px;font-size:.75rem;padding:4px">
-                    <div class="fw-semibold text-muted">${cell.day}</div></div></div>`;
+                html += `<div class="col px-1"><div class="border border-light rounded p-2 text-center bg-light opacity-50 d-flex flex-column h-100" style="min-height:75px;">
+                    <span class="small font-weight-bold text-muted text-end w-100">${cell.day}</span>
+                </div></div>`;
                 continue;
             }
 
-            const ds       = cell.ds;
-            const off      = isOff(ds);
-            const filed    = isFiled(ds);
-            const past     = isPast(ds);
-            const isStart  = ds === startDate;
-            const isEnd    = ds === endDate;
-            const inRange  = startDate && endDate && ds > startDate && ds < endDate;
+            const ds         = cell.ds;
+            const off        = isOff(ds);
+            const filed      = isFiled(ds);
+            const past       = isPast(ds);
+            const isStart    = ds === startDate;
+            const isEnd      = ds === endDate;
+            const inRange    = startDate && endDate && ds > startDate && ds < endDate;
             const selectable = !off && !filed && !past;
 
-            let style  = 'min-height:46px;font-size:.75rem;border-radius:4px;padding:4px;border:1px solid #dee2e6;text-align:center;';
-            let numCls = 'fw-semibold text-muted';
-            let click  = '';
-            let badge  = '';
+            let cellClass = 'border rounded p-2 d-flex flex-column h-100 transition-all ';
+            let style = 'min-height: 75px; ';
+            let numCls = 'small font-weight-bold text-end w-100 ';
+            let click = '';
+            let badge = '';
 
             if (isStart || isEnd) {
-                style  += 'background:rgba(var(--bs-primary-rgb),.18);border-color:rgba(var(--bs-primary-rgb),.6);cursor:pointer;';
-                numCls  = 'fw-bold text-primary';
+                cellClass += 'bg-secondary border-secondary shadow-sm';
+                numCls += 'text-white';
+                style += 'cursor: pointer;';
             } else if (inRange) {
-                style  += 'background:rgba(var(--bs-primary-rgb),.07);border-color:rgba(var(--bs-primary-rgb),.25);cursor:pointer;';
-                numCls  = 'fw-semibold text-primary';
+                cellClass += 'bg-light border-dark';
+                numCls += 'text-dark';
+                style += 'cursor: pointer;';
             } else if (filed) {
-                style  += 'opacity:.55;cursor:not-allowed;background:rgba(var(--bs-secondary-rgb),.12);border-color:var(--bs-secondary);';
-                badge   = `<div style="font-size:.6rem" class="text-secondary mt-1">Filed</div>`;
+                cellClass += 'bg-light border-light text-muted';
+                style += 'cursor: not-allowed; opacity: 0.6;';
+                badge = `<span class="badge bg-white border text-muted w-100 mt-auto pt-1" style="font-size: 0.65rem;">Filed</span>`;
             } else if (off || past) {
-                style  += 'opacity:.35;cursor:not-allowed;';
+                cellClass += 'bg-light border-light text-muted';
+                style += 'cursor: not-allowed; opacity: 0.5;';
             } else {
-                style  += 'cursor:pointer;';
-                numCls  = 'fw-semibold';
+                cellClass += 'bg-white border-light';
+                numCls += 'text-dark';
+                style += 'cursor: pointer;';
             }
 
             if (selectable) {
                 click = `onclick="selectDay('${ds}')"`;
             }
 
-            html += `<div class="col"><div style="${style}" ${click}>
-                <div class="${numCls}">${cell.day}</div>${badge}
-            </div></div>`;
+            html += `
+                <div class="col px-1">
+                    <div class="${cellClass}" style="${style}" ${click}>
+                        <span class="${numCls}">${cell.day}</span>
+                        ${badge}
+                    </div>
+                </div>`;
         }
         html += '</div>';
     }
@@ -483,11 +467,9 @@ function nextMonth() {
    ───────────────────────────────────────────────────────────── */
 function selectDay(ds) {
     if (!startDate || (startDate && endDate)) {
-        // First click — set start, clear end
         startDate = ds;
         endDate   = null;
     } else {
-        // Second click — set end (swap if needed)
         if (ds < startDate) {
             endDate   = startDate;
             startDate = ds;
@@ -513,16 +495,15 @@ function updateRangeInfo() {
     const days = countWorkingDays(startDate, e);
 
     box.innerHTML = `
-        <div class="border rounded p-2 bg-light">
-            <div class="d-flex align-items-center justify-content-between">
-                <span class="fw-semibold small">${fmtDate(startDate)}</span>
+        <div class="border rounded p-3 bg-white shadow-sm">
+            <div class="d-flex align-items-center flex-wrap mb-2 font-weight-bold text-dark text-uppercase">
+                <span>${fmtDate(startDate)}</span>
                 ${endDate && endDate !== startDate
-                    ? `<span class="text-muted small">→</span>
-                       <span class="fw-semibold small">${fmtDate(endDate)}</span>`
+                    ? `<span class="text-muted mx-2">→</span><span>${fmtDate(endDate)}</span>`
                     : ''}
             </div>
-            <div class="text-muted small mt-1">
-                <strong>${days}</strong> working day${days !== 1 ? 's' : ''} selected
+            <div class="small text-muted font-weight-bold text-uppercase">
+                <span class="text-dark font-weight-bold">${days}</span> working day${days !== 1 ? 's' : ''} selected
             </div>
         </div>`;
 }
@@ -541,7 +522,8 @@ function updateBalanceInfo() {
     const box = document.getElementById('balanceInfoBox');
 
     if (!sel.value) {
-        box.innerHTML = '<span class="text-muted small">Select a leave type to see your balance</span>';
+        box.className = 'border rounded p-3 bg-light text-center d-flex flex-column justify-content-center';
+        box.innerHTML = '<span class="text-muted small font-weight-bold">Select a leave type to see your balance</span>';
         return;
     }
 
@@ -553,24 +535,25 @@ function updateBalanceInfo() {
     const desc    = opt.dataset.desc ?? '';
     const pct     = total > 0 ? Math.round((balance / total) * 100) : 0;
 
+    box.className = 'border border-secondary rounded p-3 bg-white shadow-sm';
     box.innerHTML = `
-        <div class="d-flex align-items-start justify-content-between gap-2">
+        <div class="d-flex align-items-center justify-content-between gap-3">
             <div class="flex-grow-1">
-                <div class="fw-semibold">${name}</div>
-                ${desc ? `<div class="text-muted small mt-1">${desc}</div>` : ''}
-                <div class="mt-2">
-                    <div class="progress mb-1" style="height:4px;border-radius:2px">
-                        <div class="progress-bar" style="width:${pct}%"></div>
+                <div class="font-weight-bold text-dark text-uppercase">${name}</div>
+                ${desc ? `<div class="text-muted small mt-1 font-weight-bold text-uppercase" style="font-size: 0.7rem;">${desc}</div>` : ''}
+                <div class="mt-3">
+                    <div class="progress mb-2" style="height: 6px; border-radius: 3px;">
+                        <div class="progress-bar bg-secondary" style="width: ${pct}%"></div>
                     </div>
-                    <div class="d-flex justify-content-between small text-muted">
-                        <span>Used: <strong>${used}</strong></span>
-                        <span>Total: <strong>${total}</strong></span>
+                    <div class="d-flex justify-content-between text-muted font-weight-bold text-uppercase" style="font-size: 0.65rem;">
+                        <span>Used: ${used}</span>
+                        <span>Total: ${total}</span>
                     </div>
                 </div>
             </div>
-            <div class="text-end">
-                <div class="fs-4 fw-bold text-primary lh-1">${balance}</div>
-                <div class="text-muted small">days left</div>
+            <div class="text-end border-start ps-3">
+                <div class="h3 font-weight-bold text-dark mb-0 lh-1">${balance}</div>
+                <div class="text-muted small font-weight-bold text-uppercase mt-1" style="font-size: 0.65rem;">days left</div>
             </div>
         </div>`;
 }
@@ -598,8 +581,8 @@ function updateSummaryBox() {
 }
 
 function updateSubmitState() {
-    const sel  = document.getElementById('leaveTypeSelect');
-    const btn  = document.getElementById('submitLeaveBtn');
+    const sel      = document.getElementById('leaveTypeSelect');
+    const btn      = document.getElementById('submitLeaveBtn');
     const hasType  = !!sel.value;
     const hasDate  = !!startDate;
 
@@ -623,16 +606,19 @@ function toggleForm() {
 
     if (formVisible) {
         card.classList.remove('d-none');
-        btn.textContent = 'Cancel';
+        btn.textContent = 'Cancel Request';
+        btn.classList.replace('btn-secondary', 'btn-outline-dark');
         card.scrollIntoView({behavior:'smooth', block:'start'});
     } else {
         card.classList.add('d-none');
         btn.textContent = 'Apply for Leave';
+        btn.classList.replace('btn-outline-dark', 'btn-secondary');
     }
 }
 
 if (formVisible) {
-    document.getElementById('toggleFormBtn').textContent = 'Cancel';
+    document.getElementById('toggleFormBtn').textContent = 'Cancel Request';
+    document.getElementById('toggleFormBtn').classList.replace('btn-secondary', 'btn-outline-dark');
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -646,7 +632,8 @@ function confirmWithdraw(id) {
         showCancelButton: true,
         confirmButtonText: 'Yes, Cancel It',
         cancelButtonText: 'Keep it',
-        confirmButtonColor: 'var(--bs-primary)',
+        confirmButtonColor: '#1a1a1a', // Match Secondary
+        cancelButtonColor: '#6c757d',
     }).then(result => {
         if (result.isConfirmed) {
             document.getElementById('withdraw-form-' + id).submit();

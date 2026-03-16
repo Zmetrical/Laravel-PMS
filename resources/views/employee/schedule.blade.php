@@ -3,517 +3,313 @@
 @section('title', 'My Schedule')
 
 @section('breadcrumb')
-    <ol class="breadcrumb float-sm-right">
-        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-        <li class="breadcrumb-item active">My Schedule</li>
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-secondary text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item active text-muted">My Schedule</li>
     </ol>
 @endsection
-
-@push('styles')
-<style>
-    /* ── Calendar Grid ───────────────────────────────────────────────── */
-    .cal-table {
-        width: 100%;
-        table-layout: fixed;
-        border-collapse: separate;
-        border-spacing: 3px;
-    }
-    .cal-table th {
-        text-align: center;
-        font-size: .68rem;
-        font-weight: 700;
-        letter-spacing: .06em;
-        text-transform: uppercase;
-        padding: .4rem 0;
-        color: #6c757d;
-    }
-    .cal-cell {
-        vertical-align: top;
-        height: 88px;
-        padding: .4rem .5rem;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        background: #fff;
-        font-size: .78rem;
-        cursor: default;
-        transition: background .1s;
-    }
-    .cal-cell.is-off-month {
-        background: #f8f9fa;
-        opacity: .4;
-    }
-    .cal-cell.is-rest {
-        background: #f8f9fa;
-    }
-    .cal-cell.is-today {
-        border: 2px solid #6c757d;
-    }
-    .cal-cell.is-today .cal-day-num {
-        background: #6c757d;
-        color: #fff;
-        border-radius: 50%;
-        width: 22px;
-        height: 22px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: .73rem;
-    }
-
-    /* ── Day number ─────────────────────────────────────────────────── */
-    .cal-day-num {
-        font-weight: 700;
-        font-size: .82rem;
-        line-height: 1;
-    }
-
-    /* ── Status pill ────────────────────────────────────────────────── */
-    .cal-status {
-        display: inline-block;
-        font-size: .6rem;
-        font-weight: 600;
-        padding: .05rem .35rem;
-        border-radius: 2px;
-        margin-top: .2rem;
-        border: 1px solid transparent;
-    }
-    .cal-status-present    { border-color: #adb5bd; color: #495057; }
-    .cal-status-absent     { border-color: #adb5bd; color: #868e96; }
-    .cal-status-late       { border-color: #adb5bd; color: #495057; font-style: italic; }
-    .cal-status-half       { border-color: #adb5bd; color: #495057; }
-    .cal-status-leave      { border-color: #6c757d; color: #495057; }
-    .cal-status-holiday    { border-color: #6c757d; color: #495057; }
-    .cal-status-rest       { color: #adb5bd; font-style: italic; }
-    .cal-status-incomplete { color: #adb5bd; }
-
-    /* ── Attendance times ───────────────────────────────────────────── */
-    .cal-times {
-        font-size: .58rem;
-        color: #6c757d;
-        margin-top: .18rem;
-        line-height: 1.45;
-    }
-    .cal-times .bi {
-        font-size: .52rem;
-        vertical-align: middle;
-    }
-
-    /* ── Holiday tag ────────────────────────────────────────────────── */
-    .cal-holiday {
-        font-size: .58rem;
-        color: #495057;
-        border-top: 1px solid #dee2e6;
-        margin-top: .2rem;
-        padding-top: .15rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* ── Summary chips ──────────────────────────────────────────────── */
-    .summary-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: .3rem;
-        padding: .28rem .65rem;
-        border: 1px solid #dee2e6;
-        border-radius: 2rem;
-        font-size: .78rem;
-        font-weight: 600;
-        background: #fff;
-    }
-    .summary-chip .chip-count {
-        font-size: .9rem;
-        font-weight: 700;
-        color: #343a40;
-    }
-    .summary-chip .chip-label {
-        color: #6c757d;
-        font-weight: 500;
-    }
-
-    /* ── Today info boxes ───────────────────────────────────────────── */
-    .schedule-info-box {
-        display: flex;
-        align-items: center;
-        gap: .75rem;
-        padding: .8rem 1rem;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        background: #fff;
-        height: 100%;
-    }
-    .schedule-info-box .sib-icon {
-        width: 34px;
-        height: 34px;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        color: #6c757d;
-        font-size: 1rem;
-    }
-    .schedule-info-box .sib-label {
-        font-size: .68rem;
-        color: #6c757d;
-        line-height: 1;
-        margin-bottom: .2rem;
-    }
-    .schedule-info-box .sib-value {
-        font-weight: 600;
-        font-size: .9rem;
-        color: #343a40;
-        line-height: 1.2;
-    }
-    .schedule-info-box .sib-sub {
-        font-size: .65rem;
-        color: #868e96;
-        margin-top: .12rem;
-    }
-
-    /* ── Legend ─────────────────────────────────────────────────────── */
-    .legend-wrap {
-        display: flex;
-        flex-wrap: wrap;
-        gap: .2rem .9rem;
-        padding-top: .6rem;
-        border-top: 1px solid #dee2e6;
-        margin-top: .5rem;
-    }
-    .legend-item {
-        display: inline-flex;
-        align-items: center;
-        gap: .3rem;
-        font-size: .71rem;
-        color: #6c757d;
-    }
-    .legend-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        border: 1px solid #adb5bd;
-        display: inline-block;
-        flex-shrink: 0;
-    }
-    .legend-dot.dot-present  { background: #343a40; }
-    .legend-dot.dot-absent   { background: #fff; }
-    .legend-dot.dot-late     { background: #6c757d; }
-    .legend-dot.dot-leave    { background: #495057; border-style: dashed; }
-    .legend-dot.dot-holiday  { background: #dee2e6; }
-    .legend-dot.dot-rest     { background: #f8f9fa; }
-    .legend-today-box {
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        border: 2px solid #6c757d;
-        border-radius: 2px;
-        flex-shrink: 0;
-    }
-</style>
-@endpush
 
 @section('content')
 
 {{-- ── Page Header ──────────────────────────────────────────────────────── --}}
-<div class="d-flex align-items-center justify-content-between mb-3">
-    <div>
-        <h4 class="mb-0 font-weight-bold">My Schedule</h4>
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h4 class="mb-0 font-weight-bold text-dark">My Schedule</h4>
+    
+    {{-- Today Date Chip --}}
+    <div class="bg-white border rounded px-3 py-2 shadow-sm d-flex align-items-center">
+        <span class="h5 font-weight-bold text-dark mb-0 me-2">{{ $todayData['date']->format('d') }}</span>
+        <span class="text-muted small font-weight-bold text-uppercase">{{ $todayData['date']->format('D, M Y') }}</span>
     </div>
-    <span class="summary-chip">
-        <span class="chip-count">{{ $todayData['date']->format('d') }}</span>
-        <span class="chip-label">{{ $todayData['date']->format('D, M Y') }}</span>
-    </span>
 </div>
 
 {{-- ── Today's Schedule Card ───────────────────────────────────────────── --}}
-<div class="card mb-3">
-    <div class="card-header">
-        <h3 class="card-title font-weight-bold">
-            Today's Schedule
-        </h3>
-        <div class="card-tools">
-            <span class="badge badge-secondary">
-                {{ $todayData['date']->format('l, F j, Y') }}
-            </span>
-        </div>
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Today's Schedule</h6>
+        <span class="badge bg-light border text-dark px-2 py-1">
+            {{ $todayData['date']->format('l, F j, Y') }}
+        </span>
     </div>
-    <div class="card-body">
+    <div class="card-body p-4">
 
         @if($todayData['isRestDay'])
-            <p class="text-muted mb-3 small">
-                <i class="bi bi-info-circle mr-1"></i>
+            <div class="alert bg-light border text-muted small font-weight-bold text-uppercase text-center mb-4">
                 Today is a scheduled rest day.
-            </p>
+            </div>
         @elseif($todayData['leave'])
-            <p class="text-muted mb-3 small">
-                <i class="bi bi-info-circle mr-1"></i>
-                You are on <strong>{{ $todayData['leave']->leaveType->name }}</strong> today.
-            </p>
+            <div class="alert bg-light border text-muted small font-weight-bold text-uppercase text-center mb-4">
+                You are on <span class="text-dark">{{ $todayData['leave']->leaveType->name }}</span> today.
+            </div>
         @endif
 
-        <div class="row">
-            <div class="col-md-4 mb-2">
-                <div class="schedule-info-box">
-                    <div class="sib-icon">
-                        <i class="bi bi-person-check"></i>
-                    </div>
-                    <div>
-                        <div class="sib-label">Status</div>
-                        <div class="sib-value">{{ $todayData['status'] }}</div>
-                    </div>
+        {{-- Added Bootstrap 5 gutter (g-3) for consistent spacing --}}
+        <div class="row g-3">
+            {{-- Status Box --}}
+            <div class="col-md-4">
+                <div class="border rounded bg-light p-3 text-center h-100 d-flex flex-column justify-content-center py-4">
+                    <span class="text-muted small font-weight-bold text-uppercase mb-2">Status</span>
+                    <span class="h5 font-weight-bold text-dark mb-0">{{ $todayData['status'] }}</span>
                 </div>
             </div>
-            <div class="col-md-4 mb-2">
-                <div class="schedule-info-box">
-                    <div class="sib-icon">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                    </div>
-                    <div>
-                        <div class="sib-label">Time In</div>
-                        <div class="sib-value">
-                            {{ $todayData['attendance']?->time_in
-                                ? \Carbon\Carbon::parse($todayData['attendance']->time_in)->format('h:i A')
-                                : '—' }}
-                        </div>
-                        <div class="sib-sub">
-                            Scheduled: {{ \Carbon\Carbon::parse($todayData['workStart'])->format('h:i A') }}
-                        </div>
-                    </div>
+            
+            {{-- Time In Box --}}
+            <div class="col-md-4">
+                <div class="border rounded bg-light p-3 text-center h-100 d-flex flex-column justify-content-center py-4">
+                    <span class="text-muted small font-weight-bold text-uppercase mb-2">Time In</span>
+                    <span class="h5 font-weight-bold text-dark mb-1">
+                        {{ $todayData['attendance']?->time_in 
+                            ? \Carbon\Carbon::parse($todayData['attendance']->time_in)->format('h:i A') 
+                            : '—' }}
+                    </span>
+                    <span class="text-muted" style="font-size: 0.7rem;">
+                        Scheduled: {{ \Carbon\Carbon::parse($todayData['workStart'])->format('h:i A') }}
+                    </span>
                 </div>
             </div>
-            <div class="col-md-4 mb-2">
-                <div class="schedule-info-box">
-                    <div class="sib-icon">
-                        <i class="bi bi-box-arrow-right"></i>
-                    </div>
-                    <div>
-                        <div class="sib-label">Time Out</div>
-                        <div class="sib-value">
-                            {{ $todayData['attendance']?->time_out
-                                ? \Carbon\Carbon::parse($todayData['attendance']->time_out)->format('h:i A')
-                                : '—' }}
-                        </div>
-                        <div class="sib-sub">
-                            Scheduled: {{ \Carbon\Carbon::parse($todayData['workEnd'])->format('h:i A') }}
-                        </div>
-                    </div>
+
+            {{-- Time Out Box --}}
+            <div class="col-md-4">
+                <div class="border rounded bg-light p-3 text-center h-100 d-flex flex-column justify-content-center py-4">
+                    <span class="text-muted small font-weight-bold text-uppercase mb-2">Time Out</span>
+                    <span class="h5 font-weight-bold text-dark mb-1">
+                        {{ $todayData['attendance']?->time_out 
+                            ? \Carbon\Carbon::parse($todayData['attendance']->time_out)->format('h:i A') 
+                            : '—' }}
+                    </span>
+                    <span class="text-muted" style="font-size: 0.7rem;">
+                        Scheduled: {{ \Carbon\Carbon::parse($todayData['workEnd'])->format('h:i A') }}
+                    </span>
                 </div>
             </div>
         </div>
 
         @if($todayData['holiday'])
-            <div class="callout callout-default mt-3 mb-0">
-                <h6 class="mb-0">
-                    <i class="bi bi-flag mr-1"></i>
-                    {{ $todayData['holiday']['name'] }}
-                    &mdash;
-                    <span class="text-muted font-weight-normal">
-                        {{ $todayData['holiday']['type'] === 'regular' ? 'Regular Holiday (200%)' : 'Special Non-Working Holiday (130%)' }}
+            <div class="mt-4 text-center">
+                <span class="badge bg-white border border-secondary text-dark px-3 py-2 text-uppercase font-weight-bold">
+                    {{ $todayData['holiday']['name'] }} 
+                    <span class="text-muted ms-1">
+                        ({{ $todayData['holiday']['type'] === 'regular' ? 'Regular 200%' : 'Special 130%' }})
                     </span>
-                </h6>
+                </span>
             </div>
         @endif
 
     </div>
 </div>
 
-{{-- ── Monthly Summary Chips ───────────────────────────────────────────── --}}
-<div class="mb-3 d-flex flex-wrap gap-1" style="gap:.4rem">
-    <span class="summary-chip">
-        <span class="chip-count">{{ $summary['present'] }}</span>
-        <span class="chip-label">Present</span>
-    </span>
-    <span class="summary-chip">
-        <span class="chip-count">{{ $summary['late'] }}</span>
-        <span class="chip-label">Late</span>
-    </span>
-    <span class="summary-chip">
-        <span class="chip-count">{{ $summary['absent'] }}</span>
-        <span class="chip-label">Absent</span>
-    </span>
-    <span class="summary-chip">
-        <span class="chip-count">{{ $summary['leave'] }}</span>
-        <span class="chip-label">On Leave</span>
-    </span>
+{{-- ── Monthly Summary Chips (Redesigned to Stack Vertically) ─────────── --}}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="border rounded bg-white p-3 shadow-sm text-center h-100 d-flex flex-column justify-content-center">
+            <span class="h3 mb-1 font-weight-bold text-dark">{{ $summary['present'] }}</span>
+            <span class="text-muted small font-weight-bold text-uppercase">Present</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="border rounded bg-white p-3 shadow-sm text-center h-100 d-flex flex-column justify-content-center">
+            <span class="h3 mb-1 font-weight-bold text-dark">{{ $summary['late'] }}</span>
+            <span class="text-muted small font-weight-bold text-uppercase">Late</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="border rounded bg-white p-3 shadow-sm text-center h-100 d-flex flex-column justify-content-center">
+            <span class="h3 mb-1 font-weight-bold text-dark">{{ $summary['absent'] }}</span>
+            <span class="text-muted small font-weight-bold text-uppercase">Absent</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="border rounded bg-white p-3 shadow-sm text-center h-100 d-flex flex-column justify-content-center">
+            <span class="h3 mb-1 font-weight-bold text-dark">{{ $summary['leave'] }}</span>
+            <span class="text-muted small font-weight-bold text-uppercase">On Leave</span>
+        </div>
+    </div>
 </div>
 
 {{-- ── Calendar Card ───────────────────────────────────────────────────── --}}
-<div class="card mb-3">
-    <div class="card-header">
-        <h3 class="card-title font-weight-bold">
+<div class="card shadow-sm border-0 mb-5">
+    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">
             {{ $date->format('F Y') }}
-        </h3>
-        <div class="card-tools d-flex align-items-center">
-            <a href="{{ route('employee.schedule.index', ['month' => $prevMonth]) }}"
-               class="btn btn-sm btn-secondary mr-1">
-                <i class="bi bi-chevron-left"></i>
-            </a>
+        </h6>
+        <div class="d-flex align-items-center">
+            <a href="{{ route('employee.schedule.index', ['month' => $prevMonth]) }}" class="btn btn-sm btn-light border text-dark px-3 text-decoration-none"><</a>
             @if($date->format('Y-m') !== now()->format('Y-m'))
-                <a href="{{ route('employee.schedule.index') }}"
-                   class="btn btn-sm btn-secondary mr-1">
-                    Today
-                </a>
+                <a href="{{ route('employee.schedule.index') }}" class="btn btn-sm btn-outline-secondary mx-2 font-weight-bold text-decoration-none">Today</a>
+            @else
+                <div class="mx-2" style="width: 4px;"></div>
             @endif
-            <a href="{{ route('employee.schedule.index', ['month' => $nextMonth]) }}"
-               class="btn btn-sm btn-secondary">
-                <i class="bi bi-chevron-right"></i>
-            </a>
+            <a href="{{ route('employee.schedule.index', ['month' => $nextMonth]) }}" class="btn btn-sm btn-light border text-dark px-3 text-decoration-none">></a>
         </div>
     </div>
-    <div class="card-body p-2">
+    <div class="card-body p-3">
 
-        <table class="cal-table">
-            <thead>
-                <tr>
-                    @foreach(['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $day)
-                        <th>{{ $day }}</th>
-                    @endforeach
-                </tr>
-            </thead>
-            <tbody>
-                @foreach(array_chunk($calendarCells, 7) as $week)
-                    <tr>
-                        @foreach($week as $cell)
-                            @php
-                                $att     = $cell['attendance'];
-                                $leave   = $cell['leave'];
-                                $holiday = $cell['holiday'];
+        {{-- Day-of-week headers --}}
+        <div class="row no-gutters mb-2 border-bottom pb-2">
+            @foreach(['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $day)
+                <div class="col text-center text-muted small font-weight-bold text-uppercase">
+                    {{ $day }}
+                </div>
+            @endforeach
+        </div>
 
-                                $cellClass = 'cal-cell';
-                                if (! $cell['isCurrentMonth']) $cellClass .= ' is-off-month';
-                                if ($cell['isRestDay'])        $cellClass .= ' is-rest';
-                                if ($cell['isToday'])          $cellClass .= ' is-today';
+        {{-- Flexbox Calendar Grid --}}
+        @foreach(array_chunk($calendarCells, 7) as $week)
+            <div class="row no-gutters mb-2 align-items-stretch">
+                @foreach($week as $cell)
+                    @php
+                        $att        = $cell['attendance'];
+                        $leave      = $cell['leave'];
+                        $holiday    = $cell['holiday'];
+                        $isOffMonth = !$cell['isCurrentMonth'];
+                        $isRestDay  = $cell['isRestDay'];
+                        $isToday    = $cell['isToday'];
 
-                                if (! $cell['isCurrentMonth']) {
-                                    $statusClass = '';
-                                    $statusLabel = '';
-                                } elseif ($cell['isRestDay']) {
-                                    $statusClass = 'cal-status-rest';
-                                    $statusLabel = 'Rest';
-                                } elseif ($leave) {
-                                    $statusClass = 'cal-status-leave';
-                                    $statusLabel = $leave->leaveType->name ?? 'Leave';
-                                } elseif ($att) {
-                                    [$statusClass, $statusLabel] = match($att->status) {
-                                        'present'    => ['cal-status-present',    'Present'],
-                                        'absent'     => ['cal-status-absent',     'Absent'],
-                                        'late'       => ['cal-status-late',       'Late'],
-                                        'half_day'   => ['cal-status-half',       'Half Day'],
-                                        'leave'      => ['cal-status-leave',      'On Leave'],
-                                        'holiday'    => ['cal-status-holiday',    'Holiday'],
-                                        'incomplete' => ['cal-status-incomplete', 'Incomplete'],
-                                        default      => ['cal-status-incomplete', ucfirst($att->status)],
-                                    };
-                                } elseif ($holiday) {
-                                    $statusClass = 'cal-status-holiday';
-                                    $statusLabel = 'Holiday';
-                                } elseif ($cell['isCurrentMonth'] && $cell['date']->isPast()) {
-                                    $statusClass = 'cal-status-absent';
-                                    $statusLabel = 'No record';
-                                } else {
-                                    $statusClass = '';
-                                    $statusLabel = '';
-                                }
-                            @endphp
+                        if ($isOffMonth) {
+                            $calStatus = 'off_month';
+                            $statusLabel = '';
+                        } elseif ($isRestDay) {
+                            $calStatus = 'rest';
+                            $statusLabel = 'Rest';
+                        } elseif ($leave) {
+                            $calStatus = 'leave';
+                            $statusLabel = $leave->leaveType->name ?? 'Leave';
+                        } elseif ($att) {
+                            $calStatus = $att->status; 
+                            $statusLabel = match($att->status) {
+                                'present'    => 'Present',
+                                'absent'     => 'Absent',
+                                'late'       => 'Late',
+                                'half_day'   => 'Half Day',
+                                'leave'      => 'On Leave',
+                                'holiday'    => 'Holiday',
+                                'incomplete' => 'Incomplete',
+                                default      => ucfirst($att->status),
+                            };
+                        } elseif ($holiday) {
+                            $calStatus = 'holiday';
+                            $statusLabel = 'Holiday';
+                        } elseif ($cell['isCurrentMonth'] && $cell['date']->isPast()) {
+                            $calStatus = 'absent';
+                            $statusLabel = 'No record';
+                        } else {
+                            $calStatus = 'none';
+                            $statusLabel = '';
+                        }
 
-                            <td class="{{ $cellClass }}">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <span class="cal-day-num">{{ $cell['date']->day }}</span>
-                                </div>
+                        $bgClass = in_array($calStatus, ['rest', 'off_month']) ? 'bg-light' : 'bg-white';
+                        
+                        $borderClass = 'border ';
+                        if ($isToday) $borderClass .= 'border-secondary shadow-sm';
+                        elseif ($isOffMonth) $borderClass .= 'border-light';
+                        
+                        $dayNumClass = 'small font-weight-bold ';
+                        if ($isToday) {
+                            $dayNumClass .= 'bg-secondary text-white rounded px-2 py-1';
+                        } else {
+                            $dayNumClass .= ($isOffMonth) ? 'text-light' : 'text-dark';
+                        }
 
+                        $pillClass = 'badge border w-100 text-truncate py-1 mb-1 fw-bold ';
+                        $pillClass .= match($calStatus) {
+                            'absent', 'rest', 'off_month', 'incomplete' => 'bg-light text-muted border-0',
+                            'leave', 'holiday' => 'bg-white text-dark border-secondary',
+                            'none' => 'd-none',
+                            default => 'bg-white text-dark'
+                        };
+                    @endphp
+
+                    <div class="col px-1">
+                        <div class="cal-cell {{ $bgClass }} {{ $borderClass }} rounded p-2 d-flex flex-column h-100" style="min-height: 95px;">
+                            
+                            {{-- Day number --}}
+                            <div class="text-end mb-auto">
+                                <span class="{{ $dayNumClass }}">{{ $cell['date']->day }}</span>
+                            </div>
+
+                            {{-- Bottom Content --}}
+                            <div class="mt-2 text-center">
                                 @if($statusLabel)
-                                    <div>
-                                        <span class="cal-status {{ $statusClass }}">
-                                            {{ $statusLabel }}
-                                        </span>
-                                    </div>
+                                    <span class="{{ $pillClass }}" title="{{ $statusLabel }}">{{ $statusLabel }}</span>
                                 @endif
 
                                 @if($att && $att->time_in && in_array($att->status, ['present','late','half_day','incomplete']))
-                                    <div class="cal-times">
-                                        <i class="bi bi-arrow-right"></i>
-                                        {{ \Carbon\Carbon::parse($att->time_in)->format('h:i A') }}
+                                    <div class="text-muted font-weight-bold" style="font-size: 0.65rem; line-height: 1.3;">
+                                        {{ \Carbon\Carbon::parse($att->time_in)->format('H:i') }}
                                         @if($att->time_out)
-                                            <br>
-                                            <i class="bi bi-arrow-left"></i>
-                                            {{ \Carbon\Carbon::parse($att->time_out)->format('h:i A') }}
+                                            <br>{{ \Carbon\Carbon::parse($att->time_out)->format('H:i') }}
                                         @endif
                                     </div>
                                 @endif
 
-                                @if($holiday && $cell['isCurrentMonth'])
-                                    <div class="cal-holiday" title="{{ $holiday['name'] }}">
+                                @if($holiday && !$isOffMonth)
+                                    <div class="text-muted text-truncate w-100 pt-1 mt-1 border-top" style="font-size: 0.65rem;" title="{{ $holiday['name'] }}">
                                         {{ $holiday['name'] }}
                                     </div>
                                 @endif
-                            </td>
-                        @endforeach
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                            </div>
 
-        {{-- Legend --}}
-        <div class="legend-wrap">
-            <span class="legend-item">
-                <span class="legend-dot dot-present"></span> Present
-            </span>
-            <span class="legend-item">
-                <span class="legend-dot dot-late"></span> Late
-            </span>
-            <span class="legend-item">
-                <span class="legend-dot dot-absent"></span> Absent / No record
-            </span>
-            <span class="legend-item">
-                <span class="legend-dot dot-leave"></span> On Leave
-            </span>
-            <span class="legend-item">
-                <span class="legend-dot dot-holiday"></span> Holiday
-            </span>
-            <span class="legend-item">
-                <span class="legend-dot dot-rest"></span> Rest Day
-            </span>
-            <span class="legend-item">
-                <span class="legend-today-box"></span> Today
-            </span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endforeach
+
+        {{-- Legend (Fixed spacing and alignment) --}}
+        <div class="d-flex flex-wrap align-items-center justify-content-center pt-3 mt-4 border-top text-muted small font-weight-bold text-uppercase gap-4">
+            <div class="d-flex align-items-center">
+                <span class="p-1 border border-secondary bg-secondary rounded-circle me-2"></span> 
+                <span class="text-secondary">Present</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="p-1 border border-secondary bg-white rounded-circle me-2"></span> 
+                <span class="text-secondary">Late / Leave</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="p-1 border border-light bg-light rounded-circle me-2"></span> 
+                <span class="text-secondary">Absent / Rest</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="border border-secondary rounded px-3 py-1 me-2"></span> 
+                <span class="text-secondary">Today</span>
+            </div>
         </div>
 
     </div>
 </div>
 
 {{-- ── Schedule & Leave Info ───────────────────────────────────────────── --}}
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <div class="card h-100 mb-0">
-            <div class="card-header">
-                <h3 class="card-title font-weight-bold">Work Schedule</h3>
+<div class="row g-4 mb-5">
+    
+    {{-- Work Schedule Card --}}
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white border-bottom py-3">
+                <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Work Schedule</h6>
             </div>
             <div class="card-body p-0">
-                <table class="table table-sm table-bordered mb-0">
+                <table class="table table-hover align-middle mb-0">
                     <tbody>
-                        <tr>
-                            <td class="text-muted" style="width:45%">Assigned Schedule</td>
-                            <td class="font-weight-bold">
+                        <tr class="border-bottom">
+                            <td class="text-muted small font-weight-bold text-uppercase border-0 ps-4 py-3" style="width: 45%;">Assigned Schedule</td>
+                            <td class="font-weight-bold text-dark border-0 py-3">
                                 {{ $todayData['template']->name ?? 'No Schedule Assigned' }}
                             </td>
                         </tr>
-                        <tr>
-                            <td class="text-muted">Time In</td>
-                            <td>
+                        <tr class="border-bottom">
+                            <td class="text-muted small font-weight-bold text-uppercase border-0 ps-4 py-3">Time In</td>
+                            <td class="text-secondary font-weight-bold border-0 py-3">
                                 {{ isset($todayData['template']) ? \Carbon\Carbon::parse($todayData['template']->shift_in)->format('h:i A') : '—' }}
                             </td>
                         </tr>
-                        <tr>
-                            <td class="text-muted">Time Out</td>
-                            <td>
+                        <tr class="border-bottom">
+                            <td class="text-muted small font-weight-bold text-uppercase border-0 ps-4 py-3">Time Out</td>
+                            <td class="text-secondary font-weight-bold border-0 py-3">
                                 {{ isset($todayData['template']) ? \Carbon\Carbon::parse($todayData['template']->shift_out)->format('h:i A') : '—' }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-muted">Rest Day(s)</td>
-                            <td>
+                            <td class="text-muted small font-weight-bold text-uppercase border-0 ps-4 py-3">Rest Day(s)</td>
+                            <td class="text-dark font-weight-bold border-0 py-3">
                                 @if(count($todayData['restDaysList']) > 0)
                                     {{ implode(', ', $todayData['restDaysList']) }}
                                 @else
@@ -526,25 +322,29 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 mb-3">
-        <div class="card h-100 mb-0">
-            <div class="card-header">
-                <h3 class="card-title font-weight-bold">Leave Balances ({{ date('Y') }})</h3>
+
+    {{-- Leave Balances Card --}}
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white border-bottom py-3">
+                <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Leave Balances ({{ date('Y') }})</h6>
             </div>
             <div class="card-body p-0">
-                <table class="table table-sm table-bordered mb-0">
+                <table class="table table-hover align-middle mb-0">
                     <tbody>
                         @forelse($leaveBalances as $balance)
-                            <tr>
-                                <td class="text-muted" style="width:65%">{{ $balance->leaveType->name }}</td>
-                                <td class="font-weight-bold text-right">
-                                    {{ number_format($balance->balance, 1) }} days
+                            <tr class="border-bottom">
+                                <td class="text-muted small font-weight-bold text-uppercase border-0 ps-4 py-3" style="width: 65%;">
+                                    {{ $balance->leaveType->name }}
+                                </td>
+                                <td class="font-weight-bold text-dark text-end border-0 pe-4 py-3">
+                                    {{ number_format($balance->balance, 1) }} <span class="text-muted small ms-1">days</span>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="2" class="text-center text-muted py-3">
-                                    No leave balances found for this year.
+                                <td colspan="2" class="text-center text-muted py-5 border-0">
+                                    <span class="font-weight-bold d-block">No leave balances found for this year.</span>
                                 </td>
                             </tr>
                         @endforelse

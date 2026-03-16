@@ -9,23 +9,29 @@ use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
-    public function index()
-    {
-        $user = auth()->user();
+public function index()
+{
+    $user = auth()->user();
 
-        $pendingRequests = ProfileUpdateRequest::where('employeeId', $user->id)
-            ->where('status', 'pending')
-            ->orderByDesc('submittedDate')
-            ->get();
+    $leaveBalances = \App\Models\employee\LeaveBalance::with('leaveType')
+        ->where('user_id', $user->id)
+        ->where('year', now()->year)
+        ->get()
+        ->keyBy(fn($b) => $b->leaveType->name); // key by leave type name
 
-        $recentApproved = ProfileUpdateRequest::where('employeeId', $user->id)
-            ->where('status', 'approved')
-            ->where('reviewDate', '>=', now()->subHours(48))
-            ->orderByDesc('reviewDate')
-            ->get();
+    $pendingRequests = ProfileUpdateRequest::where('employeeId', $user->id)
+        ->where('status', 'pending')
+        ->orderByDesc('submittedDate')
+        ->get();
 
-        return view('employee.profile', compact('user', 'pendingRequests', 'recentApproved'));
-    }
+    $recentApproved = ProfileUpdateRequest::where('employeeId', $user->id)
+        ->where('status', 'approved')
+        ->where('reviewDate', '>=', now()->subHours(48))
+        ->orderByDesc('reviewDate')
+        ->get();
+
+    return view('employee.profile', compact('user', 'pendingRequests', 'recentApproved', 'leaveBalances'));
+}
 
     public function store(Request $request)
     {

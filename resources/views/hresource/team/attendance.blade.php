@@ -4,8 +4,8 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-        <li class="breadcrumb-item active">Team Attendance</li>
+        <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-secondary text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item active text-muted">Team Attendance</li>
     </ol>
 @endsection
 
@@ -14,85 +14,71 @@
 @include('components.alerts')
 
 {{-- ── View Toggle + Header ──────────────────────────────────── --}}
-<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
     <div class="d-flex gap-2">
-        <button class="btn btn-primary btn-sm active" id="btn-view-daily">
-            Daily View
-        </button>
-        <button class="btn btn-secondary btn-sm" id="btn-view-employee">
-            Employee View
-        </button>
+        <button class="btn btn-secondary font-weight-bold px-4 shadow-sm" id="btn-view-daily">Daily View</button>
+        <button class="btn btn-outline-dark font-weight-bold px-4" id="btn-view-employee">Employee View</button>
     </div>
-    <button class="btn btn-secondary btn-sm" id="btn-add-record">
-        <i class="bi bi-plus me-1"></i> Add Record
-    </button>
+    <button class="btn btn-secondary font-weight-bold px-4 py-2 shadow-sm" id="btn-add-record">Add Record</button>
 </div>
 
 {{-- ── Stats ─────────────────────────────────────────────────── --}}
 <div class="row g-3 mb-4">
     <div class="col-6 col-md">
-        <div class="card card-outline card-primary mb-0 stat-card" data-filter="all">
-            <div class="card-body py-3">
-                <div class="text-muted small">Total</div>
-                <div class="fs-4 fw-semibold" id="stat-total">—</div>
-            </div>
+        <div class="border border-secondary rounded bg-light p-3 shadow-sm text-center h-100 d-flex flex-column justify-content-center stat-card" data-filter="all" style="cursor:pointer;">
+            <span class="text-muted small font-weight-bold text-uppercase mb-1">Total</span>
+            <span class="h3 font-weight-bold text-dark mb-0" id="stat-total">—</span>
         </div>
     </div>
     <div class="col-6 col-md">
-        <div class="card card-outline card-primary mb-0 stat-card" data-filter="present">
-            <div class="card-body py-3">
-                <div class="text-muted small">Present</div>
-                <div class="fs-4 fw-semibold" id="stat-present">—</div>
-            </div>
+        <div class="border rounded bg-white p-3 shadow-sm text-center h-100 d-flex flex-column justify-content-center stat-card" data-filter="present" style="cursor:pointer;">
+            <span class="text-muted small font-weight-bold text-uppercase mb-1">Present</span>
+            <span class="h3 font-weight-bold text-dark mb-0" id="stat-present">—</span>
         </div>
     </div>
     <div class="col-6 col-md">
-        <div class="card card-outline card-secondary mb-0 stat-card" data-filter="late">
-            <div class="card-body py-3">
-                <div class="text-muted small">Late</div>
-                <div class="fs-4 fw-semibold" id="stat-late">—</div>
-            </div>
+        <div class="border rounded bg-white p-3 shadow-sm text-center h-100 d-flex flex-column justify-content-center stat-card" data-filter="late" style="cursor:pointer;">
+            <span class="text-muted small font-weight-bold text-uppercase mb-1">Late</span>
+            <span class="h3 font-weight-bold text-dark mb-0" id="stat-late">—</span>
         </div>
     </div>
     <div class="col-6 col-md">
-        <div class="card card-outline card-secondary mb-0 stat-card" data-filter="absent">
-            <div class="card-body py-3">
-                <div class="text-muted small">Absent</div>
-                <div class="fs-4 fw-semibold" id="stat-absent">—</div>
-            </div>
+        <div class="border rounded bg-white p-3 shadow-sm text-center h-100 d-flex flex-column justify-content-center stat-card" data-filter="absent" style="cursor:pointer;">
+            <span class="text-muted small font-weight-bold text-uppercase mb-1">Absent</span>
+            <span class="h3 font-weight-bold text-dark mb-0" id="stat-absent">—</span>
         </div>
     </div>
     <div class="col-6 col-md">
-        <div class="card card-outline card-secondary mb-0 stat-card" data-filter="issues">
-            <div class="card-body py-3">
-                <div class="text-muted small">Issues</div>
-                <div class="fs-4 fw-semibold" id="stat-issues">—</div>
-            </div>
+        <div class="border rounded bg-white p-3 shadow-sm text-center h-100 d-flex flex-column justify-content-center stat-card" data-filter="issues" style="cursor:pointer;">
+            <span class="text-muted small font-weight-bold text-uppercase mb-1">Issues</span>
+            <span class="h3 font-weight-bold text-dark mb-0" id="stat-issues">—</span>
         </div>
     </div>
 </div>
 
 {{-- ── Filters Card ──────────────────────────────────────────── --}}
-<div class="card mb-4">
-    <div class="card-body">
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white border-bottom py-3">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Filters</h6>
+    </div>
+    <div class="card-body p-4">
 
         {{-- Daily View Filters --}}
         <div id="filters-daily">
-            <div class="row g-2">
+            <div class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label small text-muted">Date</label>
-                    <input type="date" class="form-control form-control-sm"
-                           id="f-date" value="{{ date('Y-m-d') }}">
+                    <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Date</label>
+                    <input type="date" class="form-control shadow-sm" id="f-date" value="{{ date('Y-m-d') }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small text-muted">Department</label>
-                    <select class="form-select form-select-sm" id="f-department">
+                    <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Department</label>
+                    <select class="form-control shadow-sm" id="f-department">
                         <option value="">All Departments</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small text-muted">Status</label>
-                    <select class="form-select form-select-sm" id="f-status">
+                    <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Status</label>
+                    <select class="form-control shadow-sm" id="f-status">
                         <option value="all">All Status</option>
                         <option value="present">Present</option>
                         <option value="late">Late</option>
@@ -102,42 +88,49 @@
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button class="btn btn-primary btn-sm w-100" id="btn-load-daily">
-                        <i class="bi bi-search me-1"></i> Load
-                    </button>
+                    <button class="btn btn-secondary font-weight-bold shadow-sm w-100 py-2" id="btn-load-daily">Load Records</button>
                 </div>
             </div>
         </div>
 
         {{-- Employee View Filters --}}
         <div id="filters-employee" class="d-none">
-            <div class="row g-2">
+            <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label small text-muted">Employee</label>
-                    <select class="form-select form-select-sm" id="f-employee">
-                        <option value="">— Select Employee —</option>
-                    </select>
+                    <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Employee</label>
+                    {{--
+                        Pattern: hidden input holds the resolved ID,
+                        visible text input + datalist handles search.
+                        Option format: "Full Name (EMP-001)" — browser searches both.
+                    --}}
+                    <input type="hidden" id="f-employee-id">
+                    <input type="text"
+                           class="form-control shadow-sm"
+                           id="f-employee-search"
+                           list="f-employee-list"
+                           placeholder="Search by name or code…"
+                           autocomplete="off">
+                    <datalist id="f-employee-list"></datalist>
+                    <small class="text-muted d-none" id="f-employee-hint"></small>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small text-muted">Month</label>
-                    <select class="form-select form-select-sm" id="f-month">
+                    <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Month</label>
+                    <select class="form-control shadow-sm" id="f-month">
                         @foreach(['01'=>'January','02'=>'February','03'=>'March','04'=>'April','05'=>'May','06'=>'June','07'=>'July','08'=>'August','09'=>'September','10'=>'October','11'=>'November','12'=>'December'] as $v => $l)
                             <option value="{{ $v }}" {{ $v == date('m') ? 'selected' : '' }}>{{ $l }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label small text-muted">Year</label>
-                    <select class="form-select form-select-sm" id="f-year">
+                    <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Year</label>
+                    <select class="form-control shadow-sm" id="f-year">
                         @for($y = date('Y') - 2; $y <= date('Y'); $y++)
                             <option value="{{ $y }}" {{ $y == date('Y') ? 'selected' : '' }}>{{ $y }}</option>
                         @endfor
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button class="btn btn-primary btn-sm w-100" id="btn-load-employee">
-                        <i class="bi bi-search me-1"></i> Load
-                    </button>
+                    <button class="btn btn-secondary font-weight-bold shadow-sm w-100 py-2" id="btn-load-employee">Load Records</button>
                 </div>
             </div>
         </div>
@@ -146,79 +139,76 @@
 </div>
 
 {{-- ── Records Table ─────────────────────────────────────────── --}}
-<div class="card">
-    <div class="card-header d-flex align-items-center justify-content-between">
-        <span id="records-title">Attendance Records</span>
-        <small class="text-muted" id="records-count">—</small>
+<div class="card shadow-sm border-0 mb-5">
+    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase" id="records-title">Attendance Records</h6>
+        <span class="badge bg-light border text-dark px-2 py-1" id="records-count">—</span>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr id="table-head-daily">
-                        <th style="width:48px"></th>
-                        <th>Employee</th>
-                        <th>Time In</th>
-                        <th>Time Out</th>
-                        <th>Hours</th>
-                        <th>Late</th>
-                        <th>Undertime</th>
-                        <th>Status</th>
-                        <th style="width:80px">Actions</th>
+                <thead class="bg-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="border-0 ps-3 py-3" style="width:48px"></th>
+                        <th class="border-0 font-weight-bold py-3">Employee</th>
+                        <th class="border-0 font-weight-bold py-3">Time In</th>
+                        <th class="border-0 font-weight-bold py-3">Time Out</th>
+                        <th class="border-0 font-weight-bold py-3">Hours</th>
+                        <th class="border-0 font-weight-bold py-3">Late</th>
+                        <th class="border-0 font-weight-bold py-3">Undertime</th>
+                        <th class="border-0 font-weight-bold py-3">Status</th>
+                        <th class="border-0 font-weight-bold py-3 text-center pe-3" style="width:80px">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="attendance-tbody">
                     <tr>
-                        <td colspan="9" class="text-center py-5 text-muted">
-                            Select a date and click Load to view records.
+                        <td colspan="9" class="text-center py-5 text-muted bg-white">
+                            <span class="font-weight-bold d-block">Select a date and click Load to view records.</span>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="card-footer py-2">
-        <small class="text-muted" id="table-footer">—</small>
+    <div class="card-footer bg-light py-3 border-top">
+        <small class="text-muted font-weight-bold text-uppercase" id="table-footer">—</small>
     </div>
 </div>
 
 {{-- ── Add / Edit Record Modal ───────────────────────────────── --}}
-<div class="modal fade" id="record-modal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="record-modal-title">Add Attendance Record</h5>
+<div class="modal fade" id="record-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded">
+            <div class="modal-header bg-white border-bottom py-3">
+                <h6 class="modal-title font-weight-bold mb-0 text-dark text-uppercase" id="record-modal-title">Add Attendance Record</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4 bg-light">
                 <input type="hidden" id="r-record-id">
-                <div class="row g-3">
+                <div class="row g-4">
                     <div class="col-12">
-                        <label class="form-label small text-muted">
+                        <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">
                             Employee <span class="text-danger">*</span>
                         </label>
-                        <select class="form-select form-select-sm" id="r-user-id">
-                            <option value="">— Select Employee —</option>
-                        </select>
+                        <input type="hidden" id="r-user-id">
+                        <input type="text"
+                               class="form-control shadow-sm"
+                               id="r-employee-search"
+                               list="r-employee-list"
+                               placeholder="Search by name or code…"
+                               autocomplete="off">
+                        <datalist id="r-employee-list"></datalist>
+                        <small class="text-muted d-none" id="r-employee-hint"></small>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label small text-muted">
+                        <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">
                             Date <span class="text-danger">*</span>
                         </label>
-                        <input type="date" class="form-control form-control-sm"
-                               id="r-date" value="{{ date('Y-m-d') }}">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small text-muted">Time In</label>
-                        <input type="time" class="form-control form-control-sm" id="r-time-in">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small text-muted">Time Out</label>
-                        <input type="time" class="form-control form-control-sm" id="r-time-out">
+                        <input type="date" class="form-control shadow-sm font-weight-bold text-dark" id="r-date" value="{{ date('Y-m-d') }}">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label small text-muted">Override Status</label>
-                        <select class="form-select form-select-sm" id="r-status">
+                        <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Override Status</label>
+                        <select class="form-control shadow-sm" id="r-status">
                             <option value="">Auto-compute</option>
                             <option value="present">Present</option>
                             <option value="absent">Absent</option>
@@ -230,37 +220,42 @@
                             <option value="incomplete">Incomplete</option>
                         </select>
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Time In</label>
+                        <input type="time" class="form-control shadow-sm font-weight-bold text-dark" id="r-time-in">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Time Out</label>
+                        <input type="time" class="form-control shadow-sm font-weight-bold text-dark" id="r-time-out">
+                    </div>
                     <div class="col-12">
-                        <label class="form-label small text-muted">Notes</label>
-                        <textarea class="form-control form-control-sm" id="r-notes"
-                                  rows="2" placeholder="Optional notes…"></textarea>
+                        <label class="form-label text-muted small font-weight-bold text-uppercase mb-2">Notes</label>
+                        <textarea class="form-control shadow-sm p-3" id="r-notes" rows="2" placeholder="Optional notes…"></textarea>
                     </div>
                 </div>
 
                 {{-- Computed preview --}}
-                <div id="r-preview" class="mt-3 p-3 border rounded bg-light d-none">
-                    <p class="text-muted small fw-semibold text-uppercase mb-2">Computed Values</p>
-                    <div class="row g-2 text-sm">
+                <div id="r-preview" class="mt-4 p-3 border border-secondary rounded bg-white shadow-sm d-none">
+                    <p class="text-dark small font-weight-bold text-uppercase border-bottom pb-2 mb-3">Computed Values</p>
+                    <div class="row g-3 text-center">
                         <div class="col-4">
-                            <div class="text-muted small">Hours Worked</div>
-                            <strong id="r-prev-hours">—</strong>
+                            <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size:0.65rem;">Hours Worked</div>
+                            <span class="font-weight-bold text-dark" id="r-prev-hours">—</span>
+                        </div>
+                        <div class="col-4 border-start border-end">
+                            <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size:0.65rem;">Late (min)</div>
+                            <span class="font-weight-bold text-dark" id="r-prev-late">—</span>
                         </div>
                         <div class="col-4">
-                            <div class="text-muted small">Late (min)</div>
-                            <strong id="r-prev-late">—</strong>
-                        </div>
-                        <div class="col-4">
-                            <div class="text-muted small">Undertime (min)</div>
-                            <strong id="r-prev-ut">—</strong>
+                            <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size:0.65rem;">Undertime</div>
+                            <span class="font-weight-bold text-dark" id="r-prev-ut">—</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary btn-sm" id="btn-save-record">
-                    <i class="bi bi-floppy me-1"></i> Save Record
-                </button>
+            <div class="modal-footer bg-white py-3">
+                <button class="btn btn-outline-dark font-weight-bold px-4" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-secondary font-weight-bold px-4" id="btn-save-record">Save Record</button>
             </div>
         </div>
     </div>
@@ -280,10 +275,25 @@ const TeamAttendance = (() => {
     };
     const CSRF = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
-    /* ─── Helpers ───────────────────────────────────────────── */
+    /* ─── State ─────────────────────────────────────────────── */
+    let view         = 'daily';
+    let records      = [];
+    let filtered     = [];
+    let employees    = [];
+    let activeFilter = 'all';
+
+    /* ─── DOM helper (pure vanilla — no jQuery) ─────────────── */
+    const el    = id => document.getElementById(id);
+    const tbody = el('attendance-tbody');
+
+    /* ─── API ───────────────────────────────────────────────── */
     async function api(url, options = {}) {
         const res = await fetch(url, {
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
+            headers: {
+                'Accept':       'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': CSRF,
+            },
             ...options,
         });
         if (!res.ok) {
@@ -293,113 +303,187 @@ const TeamAttendance = (() => {
         return res.json();
     }
 
-    /* ─── Lazy modal ────────────────────────────────────────── */
-    let _modal = null;
-    const getModal = () => _modal ??= new bootstrap.Modal(document.getElementById('record-modal'));
+    /* ─── Bootstrap modal (lazy) ────────────────────────────── */
+    let _bsModal = null;
+    const getBsModal = () => _bsModal ??= new bootstrap.Modal(el('record-modal'));
 
-    /* ─── State ─────────────────────────────────────────────── */
-    let view      = 'daily';   // 'daily' | 'employee'
-    let records   = [];
-    let filtered  = [];
-    let employees = [];
-    let activeFilter = 'all';
+    /* ──────────────────────────────────────────────────────────
+     * EMPLOYEE SEARCH — native <datalist>, zero dependencies
+     *
+     * Each <option value> is stored as "Full Name (EMP-001)".
+     * The browser's built-in datalist filter already searches
+     * that string, so typing either a name fragment or a code
+     * fragment works out of the box.
+     *
+     * resolveEmployeeId() extracts the ID from the chosen text
+     * and writes it into the companion hidden input.
+     * ────────────────────────────────────────────────────────── */
 
-    /* ─── DOM ───────────────────────────────────────────────── */
-    const $ = id => document.getElementById(id);
-    const tbody = $('attendance-tbody');
+    function buildDatalistOptions() {
+        const html = employees
+            .map(e => `<option value="${e.fullName} (${e.id})">`)
+            .join('');
+        el('f-employee-list').innerHTML = html;
+        el('r-employee-list').innerHTML = html;
+    }
+
+    /**
+     * Parse "Full Name (EMP-001)" back to an employee ID.
+     * Falls back to a loose name search if the parenthesis
+     * pattern is not found (user typed a partial name and
+     * did not pick from the list yet).
+     */
+    function resolveEmployeeId(text) {
+        if (!text) return null;
+
+        // Exact match from datalist option: "Name (ID)"
+        const match = text.match(/\(([^)]+)\)\s*$/);
+        if (match) {
+            const found = employees.find(e => e.id === match[1]);
+            if (found) return found.id;
+        }
+
+        // Loose name match (partial typing)
+        const lower = text.toLowerCase();
+        const found = employees.find(e =>
+            e.fullName.toLowerCase().includes(lower) ||
+            e.id.toLowerCase().includes(lower)
+        );
+        return found ? found.id : null;
+    }
+
+    function updateHint(hintId, employeeId) {
+        const hint = el(hintId);
+        const emp  = employees.find(e => e.id === employeeId);
+        if (emp && (emp.department || emp.position)) {
+            hint.textContent = [emp.department, emp.position].filter(Boolean).join(' · ');
+            hint.classList.remove('d-none');
+        } else {
+            hint.textContent = '';
+            hint.classList.add('d-none');
+        }
+    }
+
+    function bindEmployeeSearch(searchId, hiddenId, hintId) {
+        const input = el(searchId);
+
+        const resolve = () => {
+            const id = resolveEmployeeId(input.value.trim());
+            el(hiddenId).value = id ?? '';
+            updateHint(hintId, id);
+        };
+
+        input.addEventListener('input',  resolve);
+        input.addEventListener('change', resolve);   // fires when datalist option is clicked
+    }
+
+    /** Programmatically set the search field (for openEdit) */
+    function setEmployeeSearch(searchId, hiddenId, hintId, employeeId) {
+        const emp = employees.find(e => e.id === employeeId);
+        if (emp) {
+            el(searchId).value = `${emp.fullName} (${emp.id})`;
+            el(hiddenId).value = emp.id;
+            updateHint(hintId, emp.id);
+        } else {
+            el(searchId).value = '';
+            el(hiddenId).value = '';
+            updateHint(hintId, null);
+        }
+    }
+
+    function clearEmployeeSearch(searchId, hiddenId, hintId) {
+        el(searchId).value = '';
+        el(hiddenId).value = '';
+        updateHint(hintId, null);
+    }
 
     /* ─── Load employees once ───────────────────────────────── */
     async function loadEmployees() {
         try {
             employees = await api(ROUTES.employees);
-            populateEmployeeDropdowns();
+            buildDatalistOptions();
             populateDeptFilter();
+            bindEmployeeSearch('f-employee-search', 'f-employee-id', 'f-employee-hint');
+            bindEmployeeSearch('r-employee-search', 'r-user-id',     'r-employee-hint');
         } catch (e) {
             console.error('Failed to load employees', e);
         }
     }
 
-    function populateEmployeeDropdowns() {
-        const opts = employees.map(e =>
-            `<option value="${e.id}">${e.fullName} (${e.id})</option>`
-        ).join('');
-
-        $('f-employee').innerHTML = '<option value="">— Select Employee —</option>' + opts;
-        $('r-user-id').innerHTML  = '<option value="">— Select Employee —</option>' + opts;
-    }
-
     function populateDeptFilter() {
         const depts = [...new Set(employees.map(e => e.department).filter(Boolean))].sort();
-        $('f-department').innerHTML = '<option value="">All Departments</option>'
+        el('f-department').innerHTML = '<option value="">All Departments</option>'
             + depts.map(d => `<option value="${d}">${d}</option>`).join('');
     }
 
     /* ─── Load Records ──────────────────────────────────────── */
     async function loadRecords() {
-        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5 text-muted">
-            <div class="spinner-border spinner-border-sm me-2"></div>Loading…</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5 bg-white text-muted">
+            <div class="spinner-border spinner-border-sm me-2"></div>
+            <span class="font-weight-bold">Loading…</span>
+        </td></tr>`;
 
         const params = new URLSearchParams();
 
         if (view === 'daily') {
-            params.set('date', $('f-date').value);
-            if ($('f-department').value) params.set('department', $('f-department').value);
+            params.set('date', el('f-date').value);
+            if (el('f-department').value) params.set('department', el('f-department').value);
         } else {
-            const empId = $('f-employee').value;
+            const empId = el('f-employee-id').value;
             if (!empId) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5 bg-white text-muted font-weight-bold">
                     Select an employee to view records.</td></tr>`;
                 return;
             }
             params.set('user_id', empId);
-            params.set('month',   parseInt($('f-month').value));
-            params.set('year',    $('f-year').value);
+            params.set('month',   parseInt(el('f-month').value));
+            params.set('year',    el('f-year').value);
         }
 
-        // Status filter — only pass if not 'all'
-        const status = $('f-status')?.value ?? 'all';
+        const status = el('f-status')?.value ?? 'all';
         if (status && status !== 'all') params.set('status', status);
 
         try {
-            records  = await api(`${ROUTES.records}?${params}`);
-            filtered = [...records];
+            records      = await api(`${ROUTES.records}?${params}`);
+            filtered     = [...records];
+            activeFilter = 'all';
             updateTitle();
             updateStats();
             renderTable();
         } catch (e) {
-            tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-danger">
-                <i class="bi bi-exclamation-triangle me-1"></i>${e.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5 bg-white text-dark font-weight-bold">
+                Error: ${e.message}</td></tr>`;
         }
     }
 
     /* ─── Stats ─────────────────────────────────────────────── */
     function updateStats() {
-        const total   = records.length;
-        const present = records.filter(r => r.status === 'present').length;
-        const late    = records.filter(r => r.status === 'late').length;
-        const absent  = records.filter(r => r.status === 'absent').length;
-        const issues  = records.filter(r => ['incomplete','absent'].includes(r.status)).length;
+        el('stat-total').textContent   = records.length;
+        el('stat-present').textContent = records.filter(r => r.status === 'present').length;
+        el('stat-late').textContent    = records.filter(r => r.status === 'late').length;
+        el('stat-absent').textContent  = records.filter(r => r.status === 'absent').length;
+        el('stat-issues').textContent  = records.filter(r => ['incomplete', 'absent'].includes(r.status)).length;
 
-        $('stat-total').textContent   = total;
-        $('stat-present').textContent = present;
-        $('stat-late').textContent    = late;
-        $('stat-absent').textContent  = absent;
-        $('stat-issues').textContent  = issues;
-
-        // Highlight active stat card
-        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('border-primary'));
+        document.querySelectorAll('.stat-card').forEach(c => {
+            c.classList.remove('border-secondary', 'bg-light');
+            c.classList.add('border', 'bg-white');
+        });
         const active = document.querySelector(`.stat-card[data-filter="${activeFilter}"]`);
-        if (active) active.classList.add('border-primary');
+        if (active) {
+            active.classList.remove('border', 'bg-white');
+            active.classList.add('border-secondary', 'bg-light');
+        }
     }
 
     function updateTitle() {
         if (view === 'daily') {
-            $('records-title').textContent =
-                `Attendance — ${$('f-date').value}`;
+            el('records-title').textContent = `Attendance — ${el('f-date').value}`;
         } else {
-            const emp = employees.find(e => e.id === $('f-employee').value);
-            $('records-title').textContent = emp
-                ? `${emp.fullName} — ${$('f-month').options[$('f-month').selectedIndex].text} ${$('f-year').value}`
+            const empId = el('f-employee-id').value;
+            const emp   = employees.find(e => e.id === empId);
+            const month = el('f-month');
+            el('records-title').textContent = emp
+                ? `${emp.fullName} — ${month.options[month.selectedIndex].text} ${el('f-year').value}`
                 : 'Attendance Records';
         }
     }
@@ -407,59 +491,67 @@ const TeamAttendance = (() => {
     /* ─── Render Table ──────────────────────────────────────── */
     function renderTable() {
         if (!filtered.length) {
-            tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5 text-muted">
-                <i class="bi bi-calendar-x me-2"></i>No records found.</td></tr>`;
-            $('table-footer').textContent = 'No results';
+            tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5 bg-white text-muted font-weight-bold">
+                No records found for this criteria.</td></tr>`;
+            el('table-footer').textContent  = 'No results';
+            el('records-count').textContent = '0';
             return;
         }
 
         const statusBadge = s => {
             const cls = {
-                present:    'bg-primary',
-                late:       'bg-secondary',
-                absent:     'bg-secondary',
-                incomplete: 'bg-secondary',
-                half_day:   'bg-secondary',
-                leave:      'bg-secondary',
-                holiday:    'bg-primary',
-                rest_day:   'bg-secondary',
-            }[s] ?? 'bg-secondary';
-            return `<span class="badge ${cls} bg-opacity-10 text-capitalize">${s?.replace('_',' ') ?? '—'}</span>`;
+                present:    'bg-secondary text-white',
+                late:       'bg-light border text-dark',
+                absent:     'bg-light border border-secondary text-muted',
+                incomplete: 'bg-light border text-muted',
+                half_day:   'bg-white border border-dark text-dark',
+                leave:      'bg-white border border-secondary text-dark',
+                holiday:    'bg-secondary text-white',
+                rest_day:   'bg-light border text-muted',
+            }[s] ?? 'bg-light border text-dark';
+            return `<span class="badge ${cls} px-2 py-1 text-uppercase">${s?.replace('_', ' ') ?? '—'}</span>`;
         };
 
         tbody.innerHTML = filtered.map(r => {
             const name     = r.user?.fullName ?? '—';
             const dept     = r.user?.department ?? '—';
-            const pos      = r.user?.position  ?? '—';
-            const initials = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-            const hasIssue = ['incomplete','absent'].includes(r.status);
+            const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+            const hasIssue = ['incomplete', 'absent'].includes(r.status);
 
-            return `<tr class="${hasIssue ? 'table-warning' : ''}">
-                <td class="text-center">
-                    <span class="d-inline-flex align-items-center justify-content-center
-                          rounded-circle bg-secondary bg-opacity-10 text-secondary fw-semibold"
-                          style="width:32px;height:32px;font-size:.7rem">
-                        ${initials}
-                    </span>
+            return `<tr class="border-bottom ${hasIssue ? 'bg-light' : 'bg-white'}">
+                <td class="text-center ps-3 py-3">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-secondary text-white font-weight-bold shadow-sm"
+                          style="width:36px;height:36px;font-size:.8rem">${initials}</span>
                 </td>
-                <td>
-                    <div class="fw-semibold">${name}</div>
-                    <div class="text-muted small">${r.user_id} &middot; ${dept}
-                        ${view === 'employee' ? `&middot; ${r.date}` : ''}
+                <td class="py-3">
+                    <div class="font-weight-bold text-dark">${name}</div>
+                    <div class="text-muted small font-weight-bold text-uppercase" style="font-size:0.7rem;">
+                        ${r.user_id} <span class="mx-1">|</span> ${dept}
+                        ${view === 'employee' ? `<span class="mx-1">|</span> <span class="text-dark">${r.date}</span>` : ''}
                     </div>
                 </td>
-                <td>${r.time_in  ? r.time_in.slice(0,5)  : '<span class="text-muted">—</span>'}</td>
-                <td>${r.time_out ? r.time_out.slice(0,5) : '<span class="text-muted">—</span>'}</td>
-                <td>${r.hours_worked > 0 ? parseFloat(r.hours_worked).toFixed(2) : '<span class="text-muted">—</span>'}</td>
-                <td>${r.late_minutes > 0
-                    ? `<span class="text-secondary">${parseFloat(r.late_minutes).toFixed(0)} min</span>`
-                    : '<span class="text-muted">—</span>'}</td>
-                <td>${r.undertime_minutes > 0
-                    ? `<span class="text-secondary">${parseFloat(r.undertime_minutes).toFixed(0)} min</span>`
-                    : '<span class="text-muted">—</span>'}</td>
-                <td>${statusBadge(r.status)}</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-secondary py-1 px-2 btn-edit-record"
+                <td class="py-3 font-weight-bold text-secondary">
+                    ${r.time_in  ? r.time_in.slice(0,5)  : '<span class="text-muted fw-normal">—</span>'}
+                </td>
+                <td class="py-3 font-weight-bold text-secondary">
+                    ${r.time_out ? r.time_out.slice(0,5) : '<span class="text-muted fw-normal">—</span>'}
+                </td>
+                <td class="py-3 font-weight-bold text-dark">
+                    ${r.hours_worked > 0 ? parseFloat(r.hours_worked).toFixed(2) : '<span class="text-muted fw-normal">—</span>'}
+                </td>
+                <td class="py-3 font-weight-bold">
+                    ${r.late_minutes > 0
+                        ? `<span class="text-dark">${parseFloat(r.late_minutes).toFixed(0)} min</span>`
+                        : '<span class="text-muted fw-normal">—</span>'}
+                </td>
+                <td class="py-3 font-weight-bold">
+                    ${r.undertime_minutes > 0
+                        ? `<span class="text-dark">${parseFloat(r.undertime_minutes).toFixed(0)} min</span>`
+                        : '<span class="text-muted fw-normal">—</span>'}
+                </td>
+                <td class="py-3">${statusBadge(r.status)}</td>
+                <td class="py-3 text-center pe-3">
+                    <button class="btn btn-sm btn-light border text-dark font-weight-bold px-3 btn-edit-record shadow-sm"
                             data-record='${JSON.stringify({
                                 id:       r.id,
                                 user_id:  r.user_id,
@@ -469,164 +561,158 @@ const TeamAttendance = (() => {
                                 status:   r.status,
                                 notes:    r.notes ?? '',
                             }).replace(/'/g, "&apos;")}'
-                            title="Edit">
-                        <i class="bi bi-pencil"></i>
-                    </button>
+                            title="Edit">Edit</button>
                 </td>
             </tr>`;
         }).join('');
 
-        $('table-footer').textContent =
-            `Showing ${filtered.length} of ${records.length} record(s)`;
-        $('records-count').textContent = `${filtered.length} record(s)`;
+        el('table-footer').textContent  = `Showing ${filtered.length} of ${records.length} record(s)`;
+        el('records-count').textContent = `${filtered.length}`;
     }
 
     /* ─── View Toggle ───────────────────────────────────────── */
     function setView(v) {
         view = v;
 
-        $('filters-daily').classList.toggle('d-none',    v === 'employee');
-        $('filters-employee').classList.toggle('d-none', v === 'daily');
-        $('btn-view-daily').className    = `btn btn-sm ${v === 'daily'    ? 'btn-primary'   : 'btn-secondary'}`;
-        $('btn-view-employee').className = `btn btn-sm ${v === 'employee' ? 'btn-primary'   : 'btn-secondary'}`;
+        el('filters-daily').classList.toggle('d-none',    v === 'employee');
+        el('filters-employee').classList.toggle('d-none', v === 'daily');
 
-        // Reset
-        records  = [];
-        filtered = [];
+        el('btn-view-daily').className    = v === 'daily'
+            ? 'btn btn-secondary font-weight-bold px-4 shadow-sm'
+            : 'btn btn-outline-dark font-weight-bold px-4';
+        el('btn-view-employee').className = v === 'employee'
+            ? 'btn btn-secondary font-weight-bold px-4 shadow-sm'
+            : 'btn btn-outline-dark font-weight-bold px-4';
+
+        records      = [];
+        filtered     = [];
+        activeFilter = 'all';
         updateStats();
-        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5 text-muted">
-            ${v === 'daily' ? 'Select a date and click Load.' : 'Select an employee and click Load.'}</td></tr>`;
-        $('records-title').textContent = 'Attendance Records';
-        $('table-footer').textContent  = '—';
+
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-5 bg-white text-muted font-weight-bold">
+            ${v === 'daily' ? 'Select a date and click Load.' : 'Select an employee and click Load.'}
+        </td></tr>`;
+
+        el('records-title').textContent = 'Attendance Records';
+        el('table-footer').textContent  = '—';
+        el('records-count').textContent = '—';
     }
 
     /* ─── Add / Edit Modal ──────────────────────────────────── */
     function openAdd() {
-        $('record-modal-title').textContent = 'Add Attendance Record';
-        $('r-record-id').value = '';
-        $('r-user-id').value   = '';
-        $('r-date').value      = $('f-date').value || '{{ date('Y-m-d') }}';
-        $('r-time-in').value   = '';
-        $('r-time-out').value  = '';
-        $('r-status').value    = '';
-        $('r-notes').value     = '';
-        $('r-preview').classList.add('d-none');
-        getModal().show();
+        el('record-modal-title').textContent = 'Add Attendance Record';
+        el('r-record-id').value = '';
+        el('r-date').value      = el('f-date').value || '{{ date('Y-m-d') }}';
+        el('r-time-in').value   = '';
+        el('r-time-out').value  = '';
+        el('r-status').value    = '';
+        el('r-notes').value     = '';
+        el('r-preview').classList.add('d-none');
+        clearEmployeeSearch('r-employee-search', 'r-user-id', 'r-employee-hint');
+        getBsModal().show();
     }
 
     function openEdit(data) {
-        $('record-modal-title').textContent = 'Edit Attendance Record';
-        $('r-record-id').value = data.id      ?? '';
-        $('r-user-id').value   = data.user_id ?? '';
-        $('r-date').value      = data.date    ?? '';
-        $('r-time-in').value   = data.time_in  ?? '';
-        $('r-time-out').value  = data.time_out ?? '';
-        $('r-status').value    = data.status   ?? '';
-        $('r-notes').value     = data.notes    ?? '';
-        $('r-preview').classList.add('d-none');
-        getModal().show();
+        el('record-modal-title').textContent = 'Edit Attendance Record';
+        el('r-record-id').value = data.id      ?? '';
+        el('r-date').value      = data.date    ?? '';
+        el('r-time-in').value   = data.time_in  ?? '';
+        el('r-time-out').value  = data.time_out ?? '';
+        el('r-status').value    = data.status   ?? '';
+        el('r-notes').value     = data.notes    ?? '';
+        el('r-preview').classList.add('d-none');
+        setEmployeeSearch('r-employee-search', 'r-user-id', 'r-employee-hint', data.user_id ?? null);
+        getBsModal().show();
     }
 
     function previewComputed() {
-        const tin  = $('r-time-in').value;
-        const tout = $('r-time-out').value;
-        if (!tin || !tout) { $('r-preview').classList.add('d-none'); return; }
+        const tin  = el('r-time-in').value;
+        const tout = el('r-time-out').value;
+        if (!tin || !tout) { el('r-preview').classList.add('d-none'); return; }
 
-        // Client-side rough preview (server does the real calc)
-        const [h1,m1] = tin.split(':').map(Number);
-        const [h2,m2] = tout.split(':').map(Number);
+        const [h1, m1] = tin.split(':').map(Number);
+        const [h2, m2] = tout.split(':').map(Number);
         let mins = (h2 * 60 + m2) - (h1 * 60 + m1);
         if (mins < 0) mins += 1440;
-        const hrs = (mins / 60).toFixed(2);
 
-        $('r-prev-hours').textContent = `${hrs} hrs`;
-        $('r-prev-late').textContent  = '(server)';
-        $('r-prev-ut').textContent    = '(server)';
-        $('r-preview').classList.remove('d-none');
+        el('r-prev-hours').textContent = `${(mins / 60).toFixed(2)} hrs`;
+        el('r-prev-late').textContent  = '(server)';
+        el('r-prev-ut').textContent    = '(server)';
+        el('r-preview').classList.remove('d-none');
     }
 
+    /* ─── Save Record ───────────────────────────────────────── */
     async function saveRecord() {
-        const btn = $('btn-save-record');
-        const userId = $('r-user-id').value;
-        const date   = $('r-date').value;
+        const btn    = el('btn-save-record');
+        const userId = el('r-user-id').value;
+        const date   = el('r-date').value;
 
         if (!userId || !date) {
-            Swal.fire({ icon: 'warning', title: 'Required', text: 'Employee and date are required.' });
+            Swal.fire({ icon: 'warning', title: 'Required', text: 'Employee and date are required.', confirmButtonColor: '#1a1a1a' });
             return;
         }
 
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Saving…';
+        btn.disabled    = true;
+        btn.textContent = 'Saving…';
 
         try {
             await api(ROUTES.upsert, {
                 method: 'POST',
-                body:   JSON.stringify({
+                body: JSON.stringify({
                     user_id:  userId,
                     date:     date,
-                    time_in:  $('r-time-in').value  || null,
-                    time_out: $('r-time-out').value || null,
-                    status:   $('r-status').value   || null,
-                    notes:    $('r-notes').value    || null,
+                    time_in:  el('r-time-in').value  || null,
+                    time_out: el('r-time-out').value || null,
+                    status:   el('r-status').value   || null,
+                    notes:    el('r-notes').value    || null,
                 }),
             });
 
-            Swal.fire({ icon: 'success', title: 'Saved!',
-                timer: 2000, showConfirmButton: false, toast: true, position: 'top-end' });
-
-            getModal().hide();
+            Swal.fire({ icon: 'success', title: 'Saved!', timer: 2000, showConfirmButton: false, toast: true, position: 'top-end' });
+            getBsModal().hide();
             await loadRecords();
 
         } catch (e) {
-            Swal.fire({ icon: 'error', title: 'Error', text: e.message });
+            Swal.fire({ icon: 'error', title: 'Error', text: e.message, confirmButtonColor: '#1a1a1a' });
         } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-floppy me-1"></i> Save Record';
+            btn.disabled    = false;
+            btn.textContent = 'Save Record';
         }
     }
 
-    /* ─── Stat card click filter ────────────────────────────── */
+    /* ─── Stat card filter ──────────────────────────────────── */
     function applyStatFilter(filter) {
         activeFilter = filter;
-
         filtered = filter === 'all'
             ? [...records]
             : filter === 'issues'
-                ? records.filter(r => ['incomplete','absent'].includes(r.status))
+                ? records.filter(r => ['incomplete', 'absent'].includes(r.status))
                 : records.filter(r => r.status === filter);
-
         updateStats();
         renderTable();
     }
 
-    /* ─── Bind ───────────────────────────────────────────────── */
+    /* ─── Bind ──────────────────────────────────────────────── */
     function bind() {
-        $('btn-view-daily').addEventListener('click',    () => setView('daily'));
-        $('btn-view-employee').addEventListener('click', () => setView('employee'));
-        $('btn-load-daily').addEventListener('click',    loadRecords);
-        $('btn-load-employee').addEventListener('click', loadRecords);
-        $('btn-add-record').addEventListener('click',    openAdd);
-        $('btn-save-record').addEventListener('click',   saveRecord);
+        el('btn-view-daily').addEventListener('click',    () => setView('daily'));
+        el('btn-view-employee').addEventListener('click', () => setView('employee'));
+        el('btn-load-daily').addEventListener('click',    loadRecords);
+        el('btn-load-employee').addEventListener('click', loadRecords);
+        el('btn-add-record').addEventListener('click',    openAdd);
+        el('btn-save-record').addEventListener('click',   saveRecord);
 
-        // Enter key on date field triggers load
-        $('f-date').addEventListener('keydown', e => { if (e.key === 'Enter') loadRecords(); });
+        el('f-date').addEventListener('keydown', e => { if (e.key === 'Enter') loadRecords(); });
+        el('r-time-in').addEventListener('change',  previewComputed);
+        el('r-time-out').addEventListener('change', previewComputed);
 
-        // Preview hours when times change
-        $('r-time-in').addEventListener('change',  previewComputed);
-        $('r-time-out').addEventListener('change', previewComputed);
-
-        // Edit from table row
         tbody.addEventListener('click', e => {
             const btn = e.target.closest('.btn-edit-record');
-            if (btn) {
-                const data = JSON.parse(btn.dataset.record.replace(/&apos;/g, "'"));
-                openEdit(data);
-            }
+            if (!btn) return;
+            const data = JSON.parse(btn.dataset.record.replace(/&apos;/g, "'"));
+            openEdit(data);
         });
 
-        // Stat card click
         document.querySelectorAll('.stat-card').forEach(card => {
-            card.style.cursor = 'pointer';
             card.addEventListener('click', () => applyStatFilter(card.dataset.filter));
         });
     }
@@ -635,7 +721,6 @@ const TeamAttendance = (() => {
     async function init() {
         bind();
         await loadEmployees();
-        // Auto-load today's records on page load
         await loadRecords();
     }
 

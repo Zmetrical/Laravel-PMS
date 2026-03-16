@@ -4,63 +4,117 @@
 
 @section('breadcrumb')
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('accounting.payroll.periods.index') }}">Payroll Periods</a></li>
-        <li class="breadcrumb-item active">Process – {{ $period->label }}</li>
+        <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-secondary text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('accounting.payroll.periods.index') }}" class="text-secondary text-decoration-none">Payroll Periods</a></li>
+        <li class="breadcrumb-item active text-muted">Process – {{ $period->label }}</li>
     </ol>
 @endsection
+
+@push('styles')
+<style>
+    /* Custom active state for the employee list to match the secondary (dark) theme */
+    .employee-item { cursor: pointer; transition: background-color 0.2s; }
+    .employee-item:hover { background-color: #f8f9fa; }
+    .employee-item.active { background-color: #1a1a1a !important; color: #fff !important; border-color: #1a1a1a !important; }
+    .employee-item.active .text-muted { color: #adb5bd !important; }
+    .employee-item.active .text-dark { color: #fff !important; }
+    .employee-item.active .badge.bg-light { background-color: #343a40 !important; border-color: #495057 !important; color: #fff !important; }
+</style>
+@endpush
 
 @section('content')
 
 @include('components.alerts')
 
 {{-- Page Header --}}
-<div class="d-flex justify-content-between align-items-start mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
     <div>
-        <h4 class="mb-1">Process Payroll — {{ $period->label }}</h4>
-        <p class="text-muted mb-0">
-            Pay Date: {{ $period->pay_date->format('F d, Y') }}
-            &mdash;
-            <span id="progress-label">{{ $savedCount }} of {{ $totalEmployees }} saved</span>
-        </p>
+        <h4 class="mb-0 font-weight-bold text-dark">Process Payroll — {{ $period->label }}</h4>
+        <small class="text-muted font-weight-bold text-uppercase">
+            Pay Date: <span class="text-dark">{{ $period->pay_date->format('M d, Y') }}</span>
+            <span class="mx-2">|</span>
+            <span id="progress-label" class="text-secondary">{{ $savedCount }} of {{ $totalEmployees }} Processed</span>
+        </small>
     </div>
-    <div class="d-flex gap-2 align-items-center">
-        <button class="btn btn-sm btn-outline-secondary" id="btn-save-all">
-            Save All
-        </button>
-        <button class="btn btn-sm btn-secondary" id="btn-release-all">
-            Release Payroll
-        </button>
+
+    {{-- Process Actions (Only on this page) --}}
+    @if($period->isProcessing())
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-dark font-weight-bold px-4 shadow-sm" id="btn-save-all">Save All</button>
+        <button class="btn btn-secondary font-weight-bold px-4 shadow-sm" id="btn-release-all">Release Payroll</button>
+    </div>
+    @endif
+</div>
+
+{{-- YOUR TAB DESIGN --}}
+<div class="mb-4">
+    <div class="d-inline-flex gap-1 bg-white border p-1 rounded shadow-sm">
+        {{-- Process Tab (Only accessible when Processing) --}}
+        @if ($period->isProcessing())
+            <a href="{{ route('accounting.payroll.periods.process', $period) }}" 
+               class="btn btn-sm font-weight-bold px-4 {{ request()->routeIs('accounting.payroll.periods.process') ? 'btn-secondary shadow-sm text-white' : 'btn-light border-0 text-muted' }}">
+                Process
+            </a>
+        @else
+            <span class="btn btn-sm font-weight-bold px-4 btn-light border-0 text-muted" 
+                  style="opacity: 0.4; cursor: not-allowed;" title="Only available while processing">
+                Process
+            </span>
+        @endif
+
+        {{-- Records Tab (Accessible unless in Draft) --}}
+        @if (!$period->isDraft())
+            <a href="{{ route('accounting.payroll.periods.records', $period) }}" 
+               class="btn btn-sm font-weight-bold px-4 {{ request()->routeIs('accounting.payroll.periods.records') ? 'btn-secondary shadow-sm text-white' : 'btn-light border-0 text-muted' }}">
+                Records
+            </a>
+        @else
+            <span class="btn btn-sm font-weight-bold px-4 btn-light border-0 text-muted" 
+                  style="opacity: 0.4; cursor: not-allowed;" title="Not available in draft status">
+                Records
+            </span>
+        @endif
+
+        {{-- Summary Tab (Only accessible when Released or Closed) --}}
+        @if ($period->isReleased() || $period->isClosed())
+            <a href="{{ route('accounting.payroll.periods.summary', $period) }}" 
+               class="btn btn-sm font-weight-bold px-4 {{ request()->routeIs('accounting.payroll.periods.summary') ? 'btn-secondary shadow-sm text-white' : 'btn-light border-0 text-muted' }}">
+                Summary
+            </a>
+        @else
+            <span class="btn btn-sm font-weight-bold px-4 btn-light border-0 text-muted" 
+                  style="opacity: 0.4; cursor: not-allowed;" title="Available only after payroll is released">
+                Summary
+            </span>
+        @endif
     </div>
 </div>
 
 {{-- Progress bar --}}
-<div class="progress mb-4" style="height:6px">
-    <div class="progress-bar"
+<div class="progress bg-light border shadow-sm mb-4" style="height: 8px; border-radius: 4px;">
+    <div class="progress-bar bg-secondary"
          id="progress-bar"
          role="progressbar"
          style="width: {{ $totalEmployees > 0 ? round(($savedCount / $totalEmployees) * 100) : 0 }}%">
     </div>
 </div>
 
-<div class="row g-3">
+<div class="row g-4 mb-5">
 
     {{-- ===== LEFT: EMPLOYEE LIST ===== --}}
-    <div class="col-lg-4">
-        <div class="card">
-            <div class="card-header py-2">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="card-title mb-0">
-                        Employees
-                        <span class="badge badge-secondary ml-1" id="emp-count">{{ $totalEmployees }}</span>
-                    </h6>
-                </div>
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border-0 h-100 d-flex flex-column">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center flex-shrink-0">
+                <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Employees</h6>
+                <span class="badge bg-light border text-dark px-2 py-1" id="emp-count">{{ $totalEmployees }}</span>
             </div>
-            <div class="card-body pb-2">
-                <input type="text" id="emp-search"
-                       class="form-control form-control-sm mb-2"
-                       placeholder="Search name or position…">
-                <select id="dept-filter" class="form-control form-control-sm">
+            
+            <div class="bg-light border-bottom p-4 flex-shrink-0">
+                <div class="input-group shadow-sm mb-3">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="emp-search" class="form-control border-start-0 font-weight-bold text-dark ps-0" placeholder="Search name or position…">
+                </div>
+                <select id="dept-filter" class="form-select shadow-sm font-weight-bold text-dark">
                     <option value="all">All Departments</option>
                     @foreach ($employees->pluck('department')->filter()->unique()->sort() as $dept)
                         <option value="{{ $dept }}">{{ $dept }}</option>
@@ -68,33 +122,32 @@
                 </select>
             </div>
 
-            <div class="overflow-auto" style="max-height:560px" id="employee-list">
+            <div class="overflow-auto bg-white flex-grow-1" style="max-height:650px;" id="employee-list">
                 @foreach ($employees as $emp)
                     @php $recordStatus = $processedIds[$emp->id] ?? null; @endphp
-                    <div class="list-group-item list-group-item-action border-0 border-bottom px-3 py-2
-                                d-flex align-items-center gap-2 employee-item"
+                    <div class="border-bottom px-4 py-3 d-flex align-items-center gap-3 employee-item"
                          data-id="{{ $emp->id }}"
                          data-name="{{ strtolower($emp->fullName) }}"
                          data-position="{{ strtolower($emp->position) }}"
                          data-dept="{{ $emp->department }}"
                          role="button">
+                        
                         <div class="flex-grow-1 overflow-hidden">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="font-weight-semibold small text-truncate">{{ $emp->fullName }}</span>
-                                <span class="record-badge badge ml-1 flex-shrink-0"
-                                      style="font-size:.6rem"
-                                      data-default="{{ $recordStatus }}">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <span class="font-weight-bold text-dark text-truncate d-block">{{ $emp->fullName }}</span>
+                                <span class="record-badge flex-shrink-0 ms-2" data-default="{{ $recordStatus }}">
                                     @if ($recordStatus === 'released')
-                                        <span class="badge badge-success">Released</span>
+                                        <span class="badge bg-secondary px-2 py-1 text-uppercase" style="font-size: 0.65rem;">Released</span>
                                     @elseif ($recordStatus === 'draft')
-                                        <span class="badge badge-secondary">Saved</span>
+                                        <span class="badge bg-light border text-dark px-2 py-1 text-uppercase" style="font-size: 0.65rem;">Saved</span>
                                     @endif
                                 </span>
                             </div>
-                            <div class="text-muted" style="font-size:.72rem">{{ $emp->position }}</div>
-                            <div class="text-muted" style="font-size:.68rem">{{ $emp->department }}</div>
+                            <div class="text-muted font-weight-bold text-uppercase" style="font-size: 0.65rem;">
+                                {{ $emp->position }} <span class="mx-1">|</span> {{ $emp->department }}
+                            </div>
                         </div>
-                        <i class="fas fa-chevron-right text-muted small"></i>
+                        <i class="bi bi-chevron-right text-muted small"></i>
                     </div>
                 @endforeach
             </div>
@@ -105,153 +158,149 @@
     <div class="col-lg-8" id="panel-detail" style="display:none">
 
         {{-- Employee Info --}}
-        <div class="card mb-3">
-            <div class="card-body py-3">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h5 class="mb-0" id="detail-name"></h5>
-                        <div class="text-muted small" id="detail-meta"></div>
-                    </div>
-                    <div class="text-end">
-                        <div class="text-muted" style="font-size:.72rem">Monthly Salary</div>
-                        <div class="font-weight-bold" id="detail-salary"></div>
-                    </div>
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h5 class="font-weight-bold text-dark mb-1" id="detail-name"></h5>
+                    <div class="text-muted small font-weight-bold text-uppercase" id="detail-meta"></div>
                 </div>
-                <hr class="my-2">
-                <div class="row g-2 text-center">
-                    <div class="col-4">
-                        <div class="border rounded py-2 px-1">
-                            <div class="text-muted" style="font-size:.68rem">Employee ID</div>
-                            <div class="font-weight-semibold small" id="detail-id"></div>
-                        </div>
+                <div class="text-end">
+                    <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size: 0.7rem;">Monthly Salary</div>
+                    <div class="h4 font-weight-bold text-dark mb-0" id="detail-salary"></div>
+                </div>
+            </div>
+            <div class="card-footer bg-light p-3 border-top">
+                <div class="row g-3 text-center">
+                    <div class="col-4 border-end">
+                        <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size: 0.65rem;">Employee ID</div>
+                        <span class="font-weight-bold text-dark" id="detail-id"></span>
+                    </div>
+                    <div class="col-4 border-end">
+                        <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size: 0.65rem;">Daily Rate</div>
+                        <span class="font-weight-bold text-dark" id="detail-daily-rate"></span>
                     </div>
                     <div class="col-4">
-                        <div class="border rounded py-2 px-1">
-                            <div class="text-muted" style="font-size:.68rem">Daily Rate</div>
-                            <div class="font-weight-semibold small" id="detail-daily-rate"></div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="border rounded py-2 px-1">
-                            <div class="text-muted" style="font-size:.68rem">Hourly Rate</div>
-                            <div class="font-weight-semibold small" id="detail-hourly-rate"></div>
-                        </div>
+                        <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size: 0.65rem;">Hourly Rate</div>
+                        <span class="font-weight-bold text-dark" id="detail-hourly-rate"></span>
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- DTR Card --}}
-        <div class="card mb-3">
-            <div class="card-header py-2 d-flex justify-content-between align-items-center">
-                <h6 class="card-title mb-0">Daily Time Record</h6>
-                <span class="badge badge-secondary" id="dtr-count">0 records</span>
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Daily Time Record</h6>
+                <span class="badge bg-light border text-dark px-2 py-1" id="dtr-count">0 records</span>
             </div>
 
-            <div id="dtr-loading" class="text-center py-4 d-none">
-                <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
-                <div class="text-muted small mt-1">Loading records…</div>
+            <div id="dtr-loading" class="text-center py-5 d-none">
+                <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
+                <span class="text-muted font-weight-bold text-uppercase small">Loading records…</span>
             </div>
 
-            <div id="dtr-summary" class="border-bottom px-3 py-2 d-none">
-                <div class="row g-2 text-center">
-                    <div class="col-3">
-                        <div class="text-muted" style="font-size:.68rem">Work Days</div>
-                        <div class="font-weight-semibold small" id="stat-workdays">—</div>
+            <div id="dtr-summary" class="bg-light border-bottom p-3 d-none">
+                <div class="row g-3 text-center">
+                    <div class="col-3 border-end">
+                        <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size: 0.65rem;">Work Days</div>
+                        <span class="font-weight-bold text-dark" id="stat-workdays">—</span>
+                    </div>
+                    <div class="col-3 border-end">
+                        <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size: 0.65rem;">Absent</div>
+                        <span class="font-weight-bold text-dark" id="stat-absent">—</span>
+                    </div>
+                    <div class="col-3 border-end">
+                        <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size: 0.65rem;">Late (min)</div>
+                        <span class="font-weight-bold text-dark" id="stat-late">—</span>
                     </div>
                     <div class="col-3">
-                        <div class="text-muted" style="font-size:.68rem">Absent</div>
-                        <div class="font-weight-semibold small" id="stat-absent">—</div>
-                    </div>
-                    <div class="col-3">
-                        <div class="text-muted" style="font-size:.68rem">Late (min)</div>
-                        <div class="font-weight-semibold small" id="stat-late">—</div>
-                    </div>
-                    <div class="col-3">
-                        <div class="text-muted" style="font-size:.68rem">Undertime</div>
-                        <div class="font-weight-semibold small" id="stat-ut">—</div>
+                        <div class="text-muted small font-weight-bold text-uppercase mb-1" style="font-size: 0.65rem;">Undertime (min)</div>
+                        <span class="font-weight-bold text-dark" id="stat-ut">—</span>
                     </div>
                 </div>
             </div>
 
-            <div class="overflow-auto" style="max-height:320px" id="dtr-records">
-                <div class="text-center text-muted py-5" id="dtr-placeholder">
+            <div class="overflow-auto bg-white" style="max-height:400px" id="dtr-records">
+                <div class="text-center text-muted py-5 font-weight-bold text-uppercase" id="dtr-placeholder">
                     Select an employee to view records
                 </div>
             </div>
         </div>
 
         {{-- Payroll Computation Card --}}
-        <div class="card" id="card-payroll" style="display:none">
-            <div class="card-header py-2 d-flex justify-content-between align-items-center">
-                <h6 class="card-title mb-0">Payroll Computation</h6>
-                <div class="d-flex gap-2 align-items-center">
-                    <span class="badge badge-secondary small" id="record-status-badge">Not Saved</span>
-                    <button class="btn btn-sm btn-outline-secondary" id="btn-save-record">
+        <div class="card shadow-sm border-0 mb-5" id="card-payroll" style="display:none">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h6 class="card-title font-weight-bold mb-0 text-dark text-uppercase">Payroll Computation</h6>
+                <div class="d-flex gap-3 align-items-center">
+                    <span class="badge bg-light border text-muted px-2 py-1 text-uppercase" id="record-status-badge">Not Saved</span>
+                    <button class="btn btn-sm btn-secondary font-weight-bold px-4 shadow-sm" id="btn-save-record">
                         Save Record
                     </button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
 
                 {{-- Deferred balance notice --}}
-                <div class="callout callout-warning d-none mb-3" id="deferred-notice">
-                    <p class="mb-0 small">
-                        Deferred balance of <strong id="deferred-amount"></strong> from the previous
+                <div class="alert alert-light border border-secondary shadow-sm d-none mb-4" id="deferred-notice">
+                    <span class="font-weight-bold text-dark text-uppercase small d-block mb-1">Deferred Balance Notice</span>
+                    <span class="small text-muted font-weight-bold">
+                        Deferred balance of <strong class="text-dark" id="deferred-amount"></strong> from the previous
                         period is included in deductions.
-                    </p>
+                    </span>
                 </div>
 
-                <div class="row g-3">
+                <div class="row g-4 mb-4">
                     {{-- Earnings --}}
                     <div class="col-md-6">
-                        <p class="text-xs text-uppercase text-muted font-weight-bold mb-1">Earnings</p>
-                        <table class="table table-sm table-borderless mb-0">
-                            <tbody id="earnings-body"></tbody>
-                            <tfoot>
-                                <tr class="border-top font-weight-bold">
-                                    <td>Gross Pay</td>
-                                    <td class="text-right" id="summary-gross"></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                        <div class="border rounded bg-white shadow-sm h-100 overflow-hidden">
+                            <div class="bg-light px-3 py-2 border-bottom text-muted small font-weight-bold text-uppercase">Earnings</div>
+                            <table class="table table-hover align-middle mb-0">
+                                <tbody id="earnings-body"></tbody>
+                                <tfoot>
+                                    <tr class="bg-light border-top">
+                                        <td class="font-weight-bold text-dark ps-3 py-3">Gross Pay</td>
+                                        <td class="font-weight-bold text-dark text-end pe-3 py-3" id="summary-gross"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
 
                     {{-- Deductions --}}
                     <div class="col-md-6">
-                        <p class="text-xs text-uppercase text-muted font-weight-bold mb-1">Deductions</p>
-                        <table class="table table-sm table-borderless mb-0">
-                            <tbody id="deductions-body"></tbody>
-                            <tfoot>
-                                <tr class="border-top font-weight-bold">
-                                    <td>Total Deductions</td>
-                                    <td class="text-right" id="summary-deductions"></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                        <div class="border rounded bg-white shadow-sm h-100 overflow-hidden">
+                            <div class="bg-light px-3 py-2 border-bottom text-muted small font-weight-bold text-uppercase">Deductions</div>
+                            <table class="table table-hover align-middle mb-0">
+                                <tbody id="deductions-body"></tbody>
+                                <tfoot>
+                                    <tr class="bg-light border-top">
+                                        <td class="font-weight-bold text-dark ps-3 py-3">Total Deductions</td>
+                                        <td class="font-weight-bold text-dark text-end pe-3 py-3" id="summary-deductions"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                {{-- Loan Deductions (own row, full width) --}}
-                <div id="loans-section" class="mt-3 d-none">
-                    <p class="text-xs text-uppercase text-muted font-weight-bold mb-1">Loan Deductions</p>
-                    <table class="table table-sm table-borderless mb-0">
+                {{-- Loan Deductions --}}
+                <div id="loans-section" class="border rounded bg-white shadow-sm mb-4 overflow-hidden d-none">
+                    <div class="bg-light px-3 py-2 border-bottom text-muted small font-weight-bold text-uppercase">Loan Deductions</div>
+                    <table class="table table-hover align-middle mb-0">
                         <tbody id="loans-body"></tbody>
                         <tfoot>
-                            <tr class="border-top font-weight-bold">
-                                <td>Loans Subtotal</td>
-                                <td class="text-right" id="summary-loans"></td>
+                            <tr class="bg-light border-top">
+                                <td class="font-weight-bold text-dark ps-3 py-3">Loans Subtotal</td>
+                                <td class="font-weight-bold text-dark text-end pe-3 py-3" id="summary-loans"></td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
 
                 {{-- Net Pay --}}
-                <div class="callout callout-info mt-3 mb-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0">Net Pay</h6>
-                        <h4 class="mb-0 font-weight-bold" id="summary-net"></h4>
-                    </div>
+                <div class="border border-secondary rounded bg-white p-4 shadow-sm text-center">
+                    <h6 class="text-dark font-weight-bold text-uppercase mb-1">Net Pay</h6>
+                    <h2 class="font-weight-bold text-dark mb-0 display-6" id="summary-net"></h2>
                 </div>
 
             </div>
@@ -260,13 +309,13 @@
     </div>
 
     {{-- Empty state --}}
-    <div class="col-lg-8 d-flex align-items-center justify-content-center" id="panel-empty">
-        <div class="text-center text-muted py-5">
-            <i class="fas fa-user fa-2x mb-2 d-block"></i>
-            <div>Select an employee to view their DTR and compute payroll</div>
+    <div class="col-lg-8" id="panel-empty">
+        <div class="text-center bg-white border rounded shadow-sm p-5 w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+            <i class="bi bi-person-fill text-muted mb-3 d-block" style="font-size: 3rem;"></i>
+            <span class="font-weight-bold text-dark d-block mb-1">No Employee Selected</span>
+            <small class="text-muted font-weight-bold text-uppercase">Select an employee from the list to compute payroll.</small>
         </div>
     </div>
-
 </div>
 
 @endsection
@@ -291,12 +340,13 @@
     });
 
     function tableRow(label, value, sub = null) {
-        return `<tr>
-            <td class="text-muted small">
+        return `
+        <tr class="border-bottom">
+            <td class="text-muted small font-weight-bold text-uppercase py-3 ps-3 border-0">
                 ${esc(label)}
-                ${sub ? `<div style="font-size:.7rem" class="text-muted">${esc(sub)}</div>` : ''}
+                ${sub ? `<div style="font-size:.65rem" class="text-muted fw-normal mt-1">${esc(sub)}</div>` : ''}
             </td>
-            <td class="text-right small">${peso(value)}</td>
+            <td class="text-end font-weight-bold text-dark py-3 pe-3 border-0">${peso(value)}</td>
         </tr>`;
     }
 
@@ -310,7 +360,7 @@
         SAVED = Math.max(0, Math.min(TOTAL, SAVED + delta));
         const pct = TOTAL > 0 ? Math.round((SAVED / TOTAL) * 100) : 0;
         document.getElementById('progress-bar').style.width = pct + '%';
-        document.getElementById('progress-label').textContent = `${SAVED} of ${TOTAL} saved`;
+        document.getElementById('progress-label').textContent = `${SAVED} of ${TOTAL} Processed`;
     }
 
     // ── Employee filter ──────────────────────────────────────────────────────
@@ -359,14 +409,14 @@
         .catch(() => {
             document.getElementById('dtr-loading').classList.add('d-none');
             document.getElementById('dtr-records').innerHTML =
-                `<div class="text-center text-muted py-4">Failed to load data.</div>`;
+                `<div class="text-center text-muted font-weight-bold py-5 text-uppercase">Failed to load data.</div>`;
         });
     }
 
     // ── Employee info ─────────────────────────────────────────────────────────
     function renderEmployeeInfo(emp) {
         document.getElementById('detail-name').textContent      = emp.fullName;
-        document.getElementById('detail-meta').textContent      = `${emp.position} · ${emp.department} · ${emp.employmentStatus}`;
+        document.getElementById('detail-meta').innerHTML        = `${emp.position} <span class="mx-1">|</span> ${emp.department} <span class="mx-1">|</span> ${emp.employmentStatus}`;
         document.getElementById('detail-salary').textContent    = peso(emp.basicSalary);
         document.getElementById('detail-id').textContent        = emp.id;
         document.getElementById('detail-daily-rate').textContent  = peso(emp.dailyRate);
@@ -386,44 +436,43 @@
 
         if (!records.length) {
             document.getElementById('dtr-records').innerHTML =
-                `<div class="text-center text-muted py-4">No attendance records for this period</div>`;
+                `<div class="text-center text-muted font-weight-bold text-uppercase py-5">No attendance records for this period</div>`;
             return;
         }
 
         const STATUS_BADGE = {
             present    : '',
-            absent     : '<span class="badge badge-secondary">Absent</span>',
-            late       : '<span class="badge badge-warning">Late</span>',
-            half_day   : '<span class="badge badge-secondary">Half Day</span>',
-            leave      : '<span class="badge badge-secondary">Leave</span>',
-            holiday    : '<span class="badge badge-secondary">Holiday</span>',
-            incomplete : '<span class="badge badge-secondary">Incomplete</span>',
-            rest_day   : '<span class="badge badge-secondary">Rest Day</span>',
+            absent     : '<span class="badge bg-light border border-secondary text-muted px-2 py-1 text-uppercase" style="font-size:0.6rem;">Absent</span>',
+            late       : '<span class="badge bg-light border text-dark px-2 py-1 text-uppercase" style="font-size:0.6rem;">Late</span>',
+            half_day   : '<span class="badge bg-light border text-dark px-2 py-1 text-uppercase" style="font-size:0.6rem;">Half Day</span>',
+            leave      : '<span class="badge bg-white border border-dark text-dark px-2 py-1 text-uppercase" style="font-size:0.6rem;">Leave</span>',
+            holiday    : '<span class="badge bg-secondary text-white px-2 py-1 text-uppercase" style="font-size:0.6rem;">Holiday</span>',
+            incomplete : '<span class="badge bg-light border text-muted px-2 py-1 text-uppercase" style="font-size:0.6rem;">Incomplete</span>',
+            rest_day   : '<span class="badge bg-light border text-muted px-2 py-1 text-uppercase" style="font-size:0.6rem;">Rest Day</span>',
         };
 
         document.getElementById('dtr-records').innerHTML = records.map(r => {
             const lateBadge = r.late_minutes > 0
-                ? `<span class="badge badge-warning ml-1">${r.late_minutes}m late</span>` : '';
+                ? `<span class="badge bg-light border text-dark ms-1 px-2 py-1 text-uppercase" style="font-size:0.6rem;">${r.late_minutes}m late</span>` : '';
             const utBadge   = r.undertime_minutes > 0
-                ? `<span class="badge badge-secondary ml-1">${r.undertime_minutes}m UT</span>` : '';
+                ? `<span class="badge bg-light border text-dark ms-1 px-2 py-1 text-uppercase" style="font-size:0.6rem;">${r.undertime_minutes}m UT</span>` : '';
             const bioBadge  = r.is_biometric
-                ? `<span class="badge badge-secondary ml-1">Bio</span>` : '';
+                ? `<span class="badge bg-light border text-muted ms-1 px-2 py-1 text-uppercase" style="font-size:0.6rem;">Bio</span>` : '';
 
             return `
-            <div class="px-3 py-2 border-bottom d-flex align-items-start gap-3
-                        ${r.status === 'absent' ? 'text-muted' : ''}">
-                <div style="min-width:80px">
-                    <div class="font-weight-semibold small">${r.date}</div>
-                    <div class="text-muted" style="font-size:.7rem">${r.day_name}</div>
+            <div class="px-4 py-3 border-bottom d-flex align-items-start gap-4 bg-white ${r.status === 'absent' ? 'opacity-75' : ''}">
+                <div style="min-width:90px">
+                    <div class="font-weight-bold text-dark">${r.date}</div>
+                    <div class="text-muted font-weight-bold text-uppercase" style="font-size:.65rem">${r.day_name}</div>
                 </div>
                 <div class="flex-grow-1">
-                    <div class="mb-1">
+                    <div class="mb-2">
                         ${STATUS_BADGE[r.status] ?? ''}${lateBadge}${utBadge}${bioBadge}
                     </div>
-                    <div class="d-flex gap-3" style="font-size:.76rem">
-                        <span class="text-muted">In: <strong>${r.time_in ?? '—'}</strong></span>
-                        <span class="text-muted">Out: <strong>${r.time_out ?? '—'}</strong></span>
-                        <span class="text-muted">Hrs: <strong>${r.hours_worked.toFixed(2)}</strong></span>
+                    <div class="d-flex gap-4 text-uppercase font-weight-bold" style="font-size:.7rem">
+                        <span class="text-muted">In: <span class="text-dark">${r.time_in ?? '—'}</span></span>
+                        <span class="text-muted">Out: <span class="text-dark">${r.time_out ?? '—'}</span></span>
+                        <span class="text-muted">Hrs: <span class="text-dark">${r.hours_worked.toFixed(2)}</span></span>
                     </div>
                 </div>
             </div>`;
@@ -457,7 +506,7 @@
 
         document.getElementById('earnings-body').innerHTML =
             earnings.map(e => tableRow(e.label, e.value, e.sub)).join('') ||
-            '<tr><td colspan="2" class="text-muted small">No earnings</td></tr>';
+            `<tr><td colspan="2" class="text-center text-muted font-weight-bold text-uppercase py-4 border-0">No earnings</td></tr>`;
 
         // Deductions
         const deductions = [
@@ -477,7 +526,7 @@
 
         document.getElementById('deductions-body').innerHTML =
             deductions.map(d => tableRow(d.label, d.value, d.sub ?? null)).join('') ||
-            '<tr><td colspan="2" class="text-muted small">No deductions</td></tr>';
+            `<tr><td colspan="2" class="text-center text-muted font-weight-bold text-uppercase py-4 border-0">No deductions</td></tr>`;
 
         // Loan deductions
         const loansSection = document.getElementById('loans-section');
@@ -486,8 +535,7 @@
 
         if (loanRows.length > 0) {
             document.getElementById('loans-body').innerHTML = loanRows.map(l =>
-                tableRow(l.label, l.amount,
-                    `Balance after: ${peso(l.balance_after)}`)
+                tableRow(l.label, l.amount, `Balance after: ${peso(l.balance_after)}`)
             ).join('');
             document.getElementById('summary-loans').textContent = peso(loanTotal);
             loansSection.classList.remove('d-none');
@@ -504,15 +552,15 @@
         const badge = document.getElementById('record-status-badge');
         if (existing) {
             badge.textContent = existing.status === 'released' ? 'Released' : 'Saved';
-            badge.className   = `badge small ${existing.status === 'released' ? 'badge-success' : 'badge-secondary'}`;
+            badge.className   = `badge px-2 py-1 text-uppercase ${existing.status === 'released' ? 'bg-secondary text-white' : 'bg-light border text-dark'}`;
         } else {
             badge.textContent = 'Not Saved';
-            badge.className   = 'badge badge-secondary small';
+            badge.className   = 'badge bg-light border text-muted px-2 py-1 text-uppercase';
         }
 
         // Disable save for released records
         const saveBtn = document.getElementById('btn-save-record');
-        saveBtn.disabled = existing?.status === 'released';
+        if(saveBtn) saveBtn.disabled = existing?.status === 'released';
 
         document.getElementById('card-payroll').style.display = '';
     }
@@ -522,8 +570,10 @@
         if (!activeEmployeeId) return;
 
         const btn = document.getElementById('btn-save-record');
+        if (!btn) return;
+
         btn.disabled    = true;
-        btn.textContent = 'Saving…';
+        btn.innerHTML   = '<span class="spinner-border spinner-border-sm me-2"></span>Saving…';
 
         fetch(`${BASE_URL}/${activeEmployeeId}/save`, {
             method : 'POST',
@@ -539,21 +589,19 @@
             btn.textContent = 'Save Record';
 
             if (!data.success) {
-                Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                Swal.fire({ icon: 'error', title: 'Error', text: data.message, confirmButtonColor: '#1a1a1a' });
                 return;
             }
 
-            // Update badge on computation card
             const badge = document.getElementById('record-status-badge');
             badge.textContent = 'Saved';
-            badge.className   = 'badge badge-secondary small';
+            badge.className   = 'badge bg-light border text-dark px-2 py-1 text-uppercase';
 
-            // Update employee list badge
             const empItem = document.querySelector(`.employee-item[data-id="${activeEmployeeId}"]`);
             if (empItem) {
                 const badgeSpan = empItem.querySelector('.record-badge');
                 if (badgeSpan) {
-                    badgeSpan.innerHTML = '<span class="badge badge-secondary">Saved</span>';
+                    badgeSpan.innerHTML = '<span class="badge bg-light border text-dark px-2 py-1 text-uppercase" style="font-size: 0.65rem;">Saved</span>';
                 }
             }
 
@@ -569,7 +617,7 @@
         .catch(() => {
             btn.disabled    = false;
             btn.textContent = 'Save Record';
-            Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to save. Please try again.' });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to save. Please try again.', confirmButtonColor: '#1a1a1a' });
         });
     }
 
@@ -581,13 +629,16 @@
             icon              : 'question',
             showCancelButton  : true,
             confirmButtonText : 'Save All',
-            confirmButtonColor: '#6c757d',
+            confirmButtonColor: '#1a1a1a',
+            cancelButtonColor : '#6c757d',
         }).then(result => {
             if (!result.isConfirmed) return;
 
             const btn = document.getElementById('btn-save-all');
+            if(!btn) return;
+            
             btn.disabled    = true;
-            btn.textContent = 'Saving…';
+            btn.innerHTML   = '<span class="spinner-border spinner-border-sm me-2"></span>Saving…';
 
             fetch(`{{ url("/accounting/payroll/periods/{$period->id}/process/save-all") }}`, {
                 method : 'POST',
@@ -603,21 +654,20 @@
                 btn.textContent = 'Save All';
 
                 if (data.success) {
-                    // Refresh page to reflect updated badges
                     Swal.fire({
                         icon              : 'success',
                         title             : 'Done',
                         text              : data.message,
-                        confirmButtonColor: '#6c757d',
+                        confirmButtonColor: '#1a1a1a',
                     }).then(() => window.location.reload());
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                    Swal.fire({ icon: 'error', title: 'Error', text: data.message, confirmButtonColor: '#1a1a1a' });
                 }
             })
             .catch(() => {
                 btn.disabled    = false;
                 btn.textContent = 'Save All';
-                Swal.fire({ icon: 'error', title: 'Error', text: 'Request failed.' });
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Request failed.', confirmButtonColor: '#1a1a1a' });
             });
         });
     }
@@ -630,13 +680,16 @@
             icon              : 'warning',
             showCancelButton  : true,
             confirmButtonText : 'Yes, Release',
-            confirmButtonColor: '#6c757d',
+            confirmButtonColor: '#1a1a1a',
+            cancelButtonColor : '#6c757d',
         }).then(result => {
             if (!result.isConfirmed) return;
 
             const btn = document.getElementById('btn-release-all');
+            if(!btn) return;
+
             btn.disabled    = true;
-            btn.textContent = 'Releasing…';
+            btn.innerHTML   = '<span class="spinner-border spinner-border-sm me-2"></span>Releasing…';
 
             fetch(`{{ url("/accounting/payroll/periods/{$period->id}/process/release-all") }}`, {
                 method : 'POST',
@@ -653,7 +706,7 @@
                         icon              : 'success',
                         title             : 'Payroll Released',
                         text              : data.message,
-                        confirmButtonColor: '#6c757d',
+                        confirmButtonColor: '#1a1a1a',
                     }).then(() => {
                         if (data.redirect) window.location.href = data.redirect;
                         else window.location.reload();
@@ -661,23 +714,23 @@
                 } else {
                     btn.disabled    = false;
                     btn.textContent = 'Release Payroll';
-                    Swal.fire({ icon: 'error', title: 'Cannot Release', text: data.message });
+                    Swal.fire({ icon: 'error', title: 'Cannot Release', text: data.message, confirmButtonColor: '#1a1a1a' });
                 }
             })
             .catch(() => {
                 btn.disabled    = false;
                 btn.textContent = 'Release Payroll';
-                Swal.fire({ icon: 'error', title: 'Error', text: 'Request failed.' });
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Request failed.', confirmButtonColor: '#1a1a1a' });
             });
         });
     }
 
     // ── Init ──────────────────────────────────────────────────────────────────
-    document.getElementById('emp-search').addEventListener('input', filterList);
-    document.getElementById('dept-filter').addEventListener('change', filterList);
-    document.getElementById('btn-save-record').addEventListener('click', saveRecord);
-    document.getElementById('btn-save-all').addEventListener('click', saveAll);
-    document.getElementById('btn-release-all').addEventListener('click', releaseAll);
+    document.getElementById('emp-search')?.addEventListener('input', filterList);
+    document.getElementById('dept-filter')?.addEventListener('change', filterList);
+    document.getElementById('btn-save-record')?.addEventListener('click', saveRecord);
+    document.getElementById('btn-save-all')?.addEventListener('click', saveAll);
+    document.getElementById('btn-release-all')?.addEventListener('click', releaseAll);
 
     document.querySelectorAll('.employee-item').forEach(el =>
         el.addEventListener('click', () => selectEmployee(el.dataset.id))
